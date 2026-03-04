@@ -23,6 +23,7 @@ website:
 format:
   html:
     theme: cosmo
+    sass-cache: false
     css: styles.css
     toc: true
       
