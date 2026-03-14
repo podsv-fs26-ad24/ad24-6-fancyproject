@@ -55,20 +55,25 @@ gantt
     section Project Initialization
         Decision on Project Idea    :milestone, m1, 2026-03-14
         Project Charta Draft    :a1, 2026-03-14, 7d
+
     section Project Understanding
-        Initiation workshop and context analysis     :b2, 2026-03-19, 1d
-        Stakeholder and user analysis     :b3, 2026-03-20, 8d
-        Project objectives and visualization concept    :b4, 2026-03-28, 5d   
+        Initiation workshop and context analysis     :a2, 2026-03-19, 1d
+        Stakeholder and user analysis     :a3, 2026-03-20, 8d
+        Project objectives and visualization concept    :a4, 2026-03-28, 5d  
+
     section Data Acquisition and Exploration
         Acquire data :a5, 2026-04-01, 2d
         Exploratory data analysis   :a6, 2026-04-02, 8d
-        Discuss data report: milestone, m2, 2026-04-09       
+        Discuss data report: milestone, m2, 2026-04-09     
+
     section Visual Encoding and Design
-        Implement Dashboard prototype :b7, 2026-04-10, 21d
-        Complete visualization report :b10, 2026-05-01, 18d
+        Implement Dashboard prototype :a7, 2026-04-10, 21d
+        Complete visualization report :a10, 2026-05-01, 18d
+
     section Project Submission
         Draft Presentation Submission   :milestone, m3, 2026-05-18
         Project Submission              :milestone, m4, 2026-06-01
+
     section Presentation
         Prepare presentation :a10, 2026-06-01, 7d
         Project presentation - exam period :a11, 2026-06-08, 21d
