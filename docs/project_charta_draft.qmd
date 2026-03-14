@@ -4,6 +4,7 @@ subtitle: "Interactive Dashboard Proposal"
 author: "DROP Inc"
 date: today
 
+---
 ## 1.1 Context and Scope
 
 **Context Domain:** International relations, geopolitical analysis, and defense economics.
