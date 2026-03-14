@@ -6,7 +6,7 @@ date: today
 
 ## 1.1 Context and Scope
 
-**Context - Domain:** International relations, geopolitical analysis, and defense economics.
+**Context Domain:** International relations, geopolitical analysis, and defense economics.
 
 **Topic:** A deep-dive exploration of state-level interactions, focusing on the historical triad of military expenditure, bilateral trade volume, and conflict involvement using the Correlates of War (COW) and SIPRI datasets.
 
