@@ -109,13 +109,13 @@ gantt
 **Available Resources:** Three robust public datasets (COW Bilateral Trade, COW War Data, SIPRI Military Expenditure). Python ecosystem (Pandas for data wrangling, Streamlit for UI, Plotly for interactive visualization).
 
 **Constraints:**  
-*   **Temporal Mismatch:** SIPRI data generally covers post-WWII, while COW data goes back to 1816. The complete triad can only be shown for overlapping years.  
-*   **Entity Matching:** COW uses distinct numerical "State Codes" which must be meticulously mapped to standard ISO country codes to align with SIPRI data.  
-*   **Screen Real Estate:** Exploratory dashboards require space for filters and multiple charts; mobile optimization is a secondary priority.  
+-   **Temporal Mismatch:** SIPRI data generally covers post-WWII, while COW data goes back to 1816. The complete triad can only be shown for overlapping years.  
+-   **Entity Matching:** COW uses distinct numerical "State Codes" which must be meticulously mapped to standard ISO country codes to align with SIPRI data.  
+-   **Screen Real Estate:** Exploratory dashboards require space for filters and multiple charts; mobile optimization is a secondary priority.  
 
 **Risks:**  
-* **Missing Data:** Trade data for certain years/countries may be missing. The UI must clearly indicate gaps rather than drawing misleading continuous lines.  
-* **Performance:** Loading massive bilateral trade CSVs repeatedly will cause lag. Data must be heavily cached and pre-processed.
+- **Missing Data:** Trade data for certain years/countries may be missing. The UI must clearly indicate gaps rather than drawing misleading continuous lines.  
+- **Performance:** Loading massive bilateral trade CSVs repeatedly will cause lag. Data must be heavily cached and pre-processed.
 
 ---
 
