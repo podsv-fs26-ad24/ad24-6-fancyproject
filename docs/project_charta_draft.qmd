@@ -1,0 +1,113 @@
+---
+title: "Project Charter: Geopolitical Conflict & Trade Explorer"
+subtitle: "Interactive Dashboard Proposal"
+author: "DROP Inc"
+date: today
+format: 
+  html:
+    toc: true
+    toc-depth: 2
+    theme: flatly
+    smooth-scroll: true
+---
+
+## 1.1 Context and Scope
+
+**Context (Domain):** International relations, geopolitical analysis, and defense economics.
+
+**Topic:** A deep-dive exploration of state-level interactions, focusing on the historical triad of military expenditure, bilateral trade volume, and conflict involvement using the Correlates of War (COW) and SIPRI datasets.
+
+**Topical Aspects Addressed:** How do specific states' economic and military profiles change before, during, and after a selected conflict?
+What does the trade and conflict network look like for a specific country over a chosen decade?
+
+**Questions Answered:** "What were the economic and military dynamics between [Country A] and [Country B] during [Conflict X]?" 
+"How has a specific nation's military spending correlated with its trade network over time?"
+
+**Expected Benefits:** Providing an unopinionated, highly flexible tool for researchers and analysts to generate hypotheses, export customized visualizations, and cross-reference three massive academic datasets instantly.
+
+**Publication:** A dedicated web-based dashboard (built via Streamlit), optimized for desktop use due to the density of information.
+
+---
+
+## 1.2 Project Objectives and Success Criteria
+
+**Objectives:**
+
+* Build a robust exploratory dashboard that allows users to query the data by either "State" (e.g., viewing all of France's trade and conflicts) or by "Conflict" (e.g., viewing all participants and their spending during the Vietnam War).
+* Implement linked views and reactive filters so that adjusting a timeframe or selecting a country automatically updates all relevant charts and data tables.
+
+**Success Criteria:**
+
+* **Qualitative:** Users report the dashboard effectively replaces manual cross-referencing of CSV files; researchers find the interface intuitive for hypothesis generation.
+* **Quantitative:** High interaction depth (e.g., average of >10 clicks or filter adjustments per session); high rate of raw data/chart exports.
+* **Out of Scope:** Pre-written narratives, editorializing the data, predictive machine-learning models forecasting future wars, and real-time conflict tracking (as datasets rely on historical collection).
+
+---
+
+## 1.3 Stakeholder Analysis
+
+* **Project Sponsor / Research Institute:** Wants a flagship tool that drives academic or professional traffic to their site and promotes data-driven security analysis. *(High influence, high interest)*
+* **Data Providers (SIPRI, COW):** Interested in the accurate, ethical, and properly attributed use of their academic data. *(Low influence, high interest)*
+* **Target Audience (Policy Analysts, Academics, Intelligence Researchers):** Need a fast, reliable tool to query historical data for reports, papers, and briefings without manual data wrangling. *(Low influence, high interest)*
+* **Design/Development Team:** Focused on technical feasibility, handling large dataset performance in the browser/server, and ensuring UI clarity. *(High influence, high interest)*
+
+---
+
+## 1.4 User Analysis
+
+### Persona 1: Sarah, The Geopolitical Policy Analyst
+* **Attributes:** High domain expertise, medium data literacy, uses desktop monitors, frequent use under tight deadlines.
+* **Jobs:** Creating localized briefings on specific regional tensions; comparing current military buildups to historical precedents.
+* **Pains:** Standardizing different country codes across COW and SIPRI databases takes hours. Merging disparate academic datasets manually in Excel is highly frustrating.
+* **Gains:** A search interface where she can select a conflict or country and instantly see all relevant trade and expenditure data populated in exportable charts.
+
+### Persona 2: David, The Academic Researcher
+* **Attributes:** High domain expertise, high data literacy, uses desktop, deep but sporadic use (during paper writing).
+* **Jobs:** Looking for macro-level correlations between economic interdependence and conflict duration.
+* **Pains:** Needs to see the exact numerical values and know precisely which years have missing data so his research is accurate.
+* **Gains:** Clear visual indicators for missing data; the ability to download the specific sliced-and-diced dataset he just created directly from the dashboard.
+
+---
+
+## 1.5 Situation Assessment
+
+**Available Resources:** * Three robust public datasets (COW Bilateral Trade, COW War Data, SIPRI Military Expenditure).
+* Python ecosystem (Pandas for data wrangling, Streamlit for UI, Plotly for interactive visualization).
+
+**Constraints:** * **Temporal Mismatch:** SIPRI data generally covers post-WWII, while COW data goes back to 1816. The complete triad can only be shown for overlapping years.
+* **Entity Matching:** COW uses distinct numerical "State Codes" which must be meticulously mapped to standard ISO country codes to align with SIPRI data.
+* **Screen Real Estate:** Exploratory dashboards require space for filters and multiple charts; mobile optimization is a secondary priority.
+
+**Risks:** * **Missing Data:** Trade data for certain years/countries may be missing. The UI must clearly indicate gaps rather than drawing misleading continuous lines.
+* **Performance:** Loading massive bilateral trade CSVs repeatedly will cause lag. Data must be heavily cached and pre-processed.
+
+---
+
+## 1.6 Visualization Concept
+
+The product will rely heavily on the concept of **"Overview first, zoom and filter, then details-on-demand."**
+
+### Product Form
+A single-page, multi-view exploratory dashboard built with Streamlit.
+
+### Visual Encodings
+* **Macro-Timeline (Top):** A broad brush-able timeline of global military spending and total active conflicts. 
+* **Relational Network (Center Left):** If a state is selected, a network graph shows trading partners and enemies. If a conflict is selected, it shows the belligerents.
+* **Comparative Line Charts (Center Right):** Detailed, multi-axis line charts showing the selected states' military expenditure (line) vs. trade volume (bar/area) over the selected time period. Active war years are shaded.
+
+### Interactivity
+* **Entity Selector (Sidebar):** A toggle allowing users to search by "State" or "Conflict."
+* **Global Time Slider:** Adjusting the slider dynamically filters all charts on the canvas.
+* **Dynamic Data Tables:** A bottom panel that updates to show the raw data (names of conflicts, exact dollar amounts) based on the current filters.
+
+### Narrative and Annotation
+* Text elements are restricted to clear chart titles, axis labels, and tooltips containing exact figures.
+* Disclaimers regarding data gaps or definitions (e.g., "intra-state" vs "inter-state") are accessible via info-icons.
+
+### Target Medium and Integration
+A standalone web application, strictly optimized for desktop/laptop use to accommodate the complex multi-view interface.
+
+### Value Articulation
+* **Cognitive and analytical value:** By allowing users to pivot instantly between a "Conflict-centric" view and a "State-centric" view, the design matches a researcher's natural workflow. The juxtaposition of shaded war timelines over trade/spending lines amplifies pattern detection.
+* **Communicative value:** It acts as a neutral, objective tool. The data speaks for itself based on user-defined parameters.
+* **Experiential and aesthetic value:** A highly functional, clean "software" aesthetic builds trust. Clear visual cues for missing data ensure academic rigor and user confidence.
