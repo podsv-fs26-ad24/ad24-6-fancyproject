@@ -5,7 +5,7 @@ author: "DROP Inc"
 date: today
 
 ---
-## 1.1 Context and Scope
+## Context and Scope
 
 **Context Domain:** International relations, geopolitical analysis, and defense economics.
 
@@ -23,7 +23,7 @@ What does the trade and conflict network look like for a specific country over a
 
 ---
 
-## 1.2 Project Objectives and Success Criteria
+## Project Objectives and Success Criteria
 
 **Objectives:**
 
@@ -65,7 +65,7 @@ gantt
 
     section Visual Encoding and Design
         Implement Dashboard prototype :a7, 2026-04-10, 21d
-        Complete visualization report :a10, 2026-05-01, 18d
+        Complete visualization report :a8, 2026-05-01, 18d
 
     section Project Submission
         Draft Presentation Submission   :milestone, m3, 2026-05-18
@@ -78,7 +78,7 @@ gantt
 
 ---
 
-## 1.3 Stakeholder Analysis
+## Stakeholder Analysis
 
 * **Project Sponsor / Research Institute:** Wants a flagship tool that drives academic or professional traffic to their site and promotes data-driven security analysis. *(High influence, high interest)*
 * **Data Providers (SIPRI, COW):** Interested in the accurate, ethical, and properly attributed use of their academic data. *(Low influence, high interest)*
@@ -87,7 +87,7 @@ gantt
 
 ---
 
-## 1.4 User Analysis
+## User Analysis
 
 ### Persona 1: Sarah, The Geopolitical Policy Analyst
 * **Attributes:** High domain expertise, medium data literacy, uses desktop monitors, frequent use under tight deadlines.
@@ -103,7 +103,7 @@ gantt
 
 ---
 
-## 1.5 Situation Assessment
+## Situation Assessment
 
 **Available Resources:** * Three robust public datasets (COW Bilateral Trade, COW War Data, SIPRI Military Expenditure).
 * Python ecosystem (Pandas for data wrangling, Streamlit for UI, Plotly for interactive visualization).
@@ -117,7 +117,7 @@ gantt
 
 ---
 
-## 1.6 Visualization Concept
+## Visualization Concept
 
 The product will rely heavily on the concept of **"Overview first, zoom and filter, then details-on-demand."**
 
