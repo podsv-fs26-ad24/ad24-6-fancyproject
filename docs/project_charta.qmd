@@ -62,16 +62,16 @@ gantt
     section Data Acquisition and Exploration
         Acquire data :a5, 2026-04-01, 2d
         Exploratory data analysis   :a6, 2026-04-02, 8d
-        Discuss data report: milestone, m2, 2026-04-09, 1d       
+        Discuss data report: milestone, m2, 2026-04-09       
     section Visual Encoding and Design
         Implement Dashboard prototype :b7, 2026-04-10, 21d
         Complete visualization report :b10, 2026-05-01, 18d
     section Project Submission
         Draft Presentation Submission   :milestone, m3, 2026-05-18
-        Project Submission              :milestone, m3, 2026-06-01
+        Project Submission              :milestone, m4, 2026-06-01
     section Presentation
         Prepare presentation :a10, 2026-06-01, 7d
-        Project presentation (exam period) :a11, 2026-06-08, 21d
+        Project presentation - exam period :a11, 2026-06-08, 21d
 ```
 
 
