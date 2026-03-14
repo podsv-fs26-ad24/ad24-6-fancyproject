@@ -1,15 +1,8 @@
 ---
-title: "Project Charter: Geopolitical Conflict & Trade Explorer"
+title: "Project Charta: Geopolitical Conflict & Trade Explorer"
 subtitle: "Interactive Dashboard Proposal"
 author: "DROP Inc"
 date: today
-format: 
-  html:
-    toc: true
-    toc-depth: 2
-    theme: flatly
-    smooth-scroll: true
----
 
 ## 1.1 Context and Scope
 
@@ -33,14 +26,15 @@ What does the trade and conflict network look like for a specific country over a
 
 **Objectives:**
 
-* Build a robust exploratory dashboard that allows users to query the data by either "State" (e.g., viewing all of France's trade and conflicts) or by "Conflict" (e.g., viewing all participants and their spending during the Vietnam War).
-* Implement linked views and reactive filters so that adjusting a timeframe or selecting a country automatically updates all relevant charts and data tables.
+- Build a robust exploratory dashboard that allows users to query the data by either "State" (e.g., viewing all of France's trade and conflicts) or by "Conflict" (e.g., viewing all participants and their spending during the Vietnam War).
+- Implement linked views and reactive filters so that adjusting a timeframe or selecting a country automatically updates all relevant charts and data tables.
 
 **Success Criteria:**
 
-* **Qualitative:** Users report the dashboard effectively replaces manual cross-referencing of CSV files; researchers find the interface intuitive for hypothesis generation.
-* **Quantitative:** High interaction depth (e.g., average of >10 clicks or filter adjustments per session); high rate of raw data/chart exports.
-* **Out of Scope:** Pre-written narratives, editorializing the data, predictive machine-learning models forecasting future wars, and real-time conflict tracking (as datasets rely on historical collection).
+- **Qualitative:** Users report the dashboard effectively replaces manual cross-referencing of CSV files; researchers find the interface intuitive for hypothesis generation.
+- **Quantitative:** High interaction depth (e.g., average of >10 clicks or filter adjustments per session); high rate of raw data/chart exports.
+- **Out of Scope:** Pre-written narratives, editorializing the data, predictive machine-learning models forecasting future wars, and real-time conflict tracking (as datasets rely on historical collection).
+
 ---  
 
 
