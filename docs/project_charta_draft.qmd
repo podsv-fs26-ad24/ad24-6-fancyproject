@@ -48,7 +48,7 @@ Divide the project into individual phases, describe them briefly and draw up a p
 gantt
     title Project Plan
     dateFormat YYYY-MM-DD
-    tickInterval 5day
+    tickInterval 14day
 
     section Project Initialization
     Decision on Project Idea : milestone, m1, 2026-03-14, 0d
