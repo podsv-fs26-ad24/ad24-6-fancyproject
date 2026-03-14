@@ -41,6 +41,46 @@ What does the trade and conflict network look like for a specific country over a
 * **Qualitative:** Users report the dashboard effectively replaces manual cross-referencing of CSV files; researchers find the interface intuitive for hypothesis generation.
 * **Quantitative:** High interaction depth (e.g., average of >10 clicks or filter adjustments per session); high rate of raw data/chart exports.
 * **Out of Scope:** Pre-written narratives, editorializing the data, predictive machine-learning models forecasting future wars, and real-time conflict tracking (as datasets rely on historical collection).
+---  
+
+
+## Project Plan
+Divide the project into individual phases, describe them briefly and draw up a preliminary timetable, e.g. as a Gantt chart:
+
+```{mermaid}
+%%| label: fig-project-plan
+%%| fig-cap: Preliminary project plan. Milestones are not final.
+gantt
+    title Project Plan
+    dateFormat YYYY-MM-DD
+    tickInterval 5day
+    section Project Initialization
+        Decision on Project Idea    :milestone, m1, 2026-03-14
+        Project Charta Draft    :a1, 2026-03-14, 7d
+
+    section Project Understanding
+        Initiation workshop and context analysis     :a2, 2026-03-19, 1d
+        Stakeholder and user analysis     :a3, 2026-03-20, 8d
+        Project objectives and visualization concept    :a4, 2026-03-28, 5d  
+
+    section Data Acquisition and Exploration
+        Acquire data :a5, 2026-04-01, 2d
+        Exploratory data analysis   :a6, 2026-04-02, 8d
+        Discuss data report: milestone, m2, 2026-04-09     
+
+    section Visual Encoding and Design
+        Implement Dashboard prototype :a7, 2026-04-10, 21d
+        Complete visualization report :a10, 2026-05-01, 18d
+
+    section Project Submission
+        Draft Presentation Submission   :milestone, m3, 2026-05-18
+        Project Submission              :milestone, m4, 2026-06-01
+
+    section Presentation
+        Prepare presentation :a10, 2026-06-01, 7d
+        Project presentation - exam period :a11, 2026-06-08, 21d
+```
+
 
 ---
 
