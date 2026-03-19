@@ -17,7 +17,7 @@ What does the trade and conflict network look like for a specific country over a
 **Questions Answered:** "What were the economic and military dynamics between [Country A] and [Country B] during [Conflict X]?" 
 "How has a specific nation's military spending correlated with its trade network over time?"
 
-**Expected Benefits:** Providing an unopinionated, highly flexible tool for researchers and analysts to generate hypotheses, export customized visualizations, and cross-reference three massive academic datasets instantly.
+**Expected Benefits:** Providing an unopinionated, flexible tool for researchers and analysts to generate hypotheses and cross-reference information from different data sources.
 
 **Publication:** A dedicated web-based dashboard (built via Streamlit), optimized for desktop use due to the density of information.
 
@@ -33,14 +33,13 @@ What does the trade and conflict network look like for a specific country over a
 **Success Criteria:**
 
 - **Qualitative:** Users report the dashboard effectively replaces manual cross-referencing of CSV files; researchers find the interface intuitive for hypothesis generation.
-- **Quantitative:** High interaction depth (e.g., average of >10 clicks or filter adjustments per session); high rate of raw data/chart exports.
+- **Quantitative:** High interaction depth (e.g., average of >10 clicks or filter adjustments per session)
 - **Out of Scope:** Pre-written narratives, editorializing the data, predictive machine-learning models forecasting future wars, and real-time conflict tracking (as datasets rely on historical collection).
 
 ---  
 
 
 ## Project Plan
-Divide the project into individual phases, describe them briefly and draw up a preliminary timetable, e.g. as a Gantt chart:
 
 ```{mermaid}
 %%| label: fig-project-plan
@@ -113,7 +112,7 @@ gantt
 * **Entity Matching:** COW uses distinct numerical "State Codes" which must be meticulously mapped to standard ISO country codes to align with SIPRI data.
 * **Screen Real Estate:** Exploratory dashboards require space for filters and multiple charts; mobile optimization is a secondary priority.
 
-**Risks:** * **Missing Data:** Trade data for certain years/countries may be missing. The UI must clearly indicate gaps rather than drawing misleading continuous lines.
+**Risks:** * **Missing Data:** Trade data for certain years/countries may be missing.  
 * **Performance:** Loading massive bilateral trade CSVs repeatedly will cause lag. Data must be heavily cached and pre-processed.
 
 ---
@@ -126,14 +125,14 @@ The product will rely heavily on the concept of **"Overview first, zoom and filt
 A single-page, multi-view exploratory dashboard built with Streamlit.
 
 ### Visual Encodings
-* **Macro-Timeline (Top):** A broad brush-able timeline of global military spending and total active conflicts. 
-* **Relational Network (Center Left):** If a state is selected, a network graph shows trading partners and enemies. If a conflict is selected, it shows the belligerents.
-* **Comparative Line Charts (Center Right):** Detailed, multi-axis line charts showing the selected states' military expenditure (line) vs. trade volume (bar/area) over the selected time period. Active war years are shaded.
+* **Macro-Timeline and/or Key Metrics:** A broad brush-able timeline of global military spending and total active conflicts. 
+* **Relational Network:** If a state is selected, a network graph shows trading partners and enemies. If a conflict is selected, it shows the belligerents.
+* **Comparative Line Charts:** Detailed, multi-axis line charts showing the selected states' military expenditure (line) vs. trade volume (bar/area) over the selected time period. Active war years are shaded.
 
 ### Interactivity
-* **Entity Selector (Sidebar):** A toggle allowing users to search by "State" or "Conflict."
-* **Global Time Slider:** Adjusting the slider dynamically filters all charts on the canvas.
-* **Dynamic Data Tables:** A bottom panel that updates to show the raw data (names of conflicts, exact dollar amounts) based on the current filters.
+* **Entity Selector:** A toggle allowing users to search by "State" or "Conflict."
+* **Global Time Slider (if possible):** Adjusting the slider dynamically filters all charts on the canvas.
+
 
 ### Narrative and Annotation
 * Text elements are restricted to clear chart titles, axis labels, and tooltips containing exact figures.
