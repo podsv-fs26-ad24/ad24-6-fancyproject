@@ -20,3 +20,24 @@ with col3:
     st.metric("Number of Countries involved in conflicts", f"{len(conflicts["Statecode_A"].unique()):,}")
 
 st.dataframe(conflicts)
+
+
+selected_countries = st.multiselect(
+    "Filter involved Countries",
+    options=conflicts["Statecode_A"].unique(),
+    default="USA"
+)
+
+min_year, max_year = st.slider(
+    "Value range",
+    min_value=int(conflicts["Year"].min()),
+    max_value=int(conflicts["Year"].max()),
+    value=(int(conflicts["Year"].min()), int(conflicts["Year"].max()))
+)
+
+filtered_df = conflicts[
+    conflicts["Statecode_A"].isin(selected_countries) &
+    conflicts["Year"].between(min_year, max_year)
+]
+
+st.dataframe(filtered_df, use_container_width=True)
