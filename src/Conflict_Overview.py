@@ -13,7 +13,10 @@ conflicts = pd.read_parquet("./data/clean/conflicts.parquet")
 trade = pd.read_parquet("./data/clean/trade.parquet")
 alliances = pd.read_parquet("./data/clean/alliances.parquet")
 
+conflict_outcomes = {0:"Ongoing MID", 1:"Victory for State A", 2:"Victory for state B", 3:"Yield by State A", 4:"Yield by State B", 5:"Stalemate",
+                     6:"Compromise", 7:"Released (for seizures)", 8:"Unclear", 9:"Missing"}
 
+conflict_roles = {1:"Primary Initiator",2:"Joiner on initiator side", 3:"Primary target", 4:"Joiner on target side"}
 
 ### Data Processing
 
@@ -125,22 +128,27 @@ with st.container():
     label="Which Conflict would you like to analyze in detail",
     options=conflicts["Conflict_ID"].unique()
     )
-    with st.container():
-        st.text(f"Conflict Severity: {conflicts["Severity"][selected_conflict]}")
-        st.text(f"Fatality Level: {conflicts["Fatality_Level"][selected_conflict]}")
+    with st.container(border=True):
+        col4, col5 = st.columns(2)
+        with col4:
+            st.text(f"Duration: {conflicts["Start_Year"][selected_conflict]} - {conflicts["End_Year"][selected_conflict]}")
+            st.text(f"Fatality Level: {conflicts["Fatality_Level"][selected_conflict]}")
+            st.text(f"Conflict Outcome: {conflict_outcomes[conflicts["Outcome"][selected_conflict]]}")
+        with col5:
+            st.text(f"Conflict Outcome: {conflict_outcomes[conflicts["Outcome"][selected_conflict]]}")
 
-    col4, col5 = st.columns(2)
-    with col4:
+    col6, col7 = st.columns(2)
+    with col6:
         with st.container(border=True):
-            st.text("Side A")
+            st.markdown("**Side A**")
             st.text(f"State: {conflicts["Statecode_A"][selected_conflict]}")
-            st.text(f"Role: {conflicts["Role_A"][selected_conflict]}")
+            st.text(f"Role: {conflict_roles[conflicts["Role_A"][selected_conflict]]}")
             st.text(f"Conflict Severity: {conflicts["Severity_A"][selected_conflict]}")
     
-    with col5:
+    with col7:
         with st.container(border=True):
-            st.text("Side B")
+            st.markdown("**Side B**")
             st.text(f"State: {conflicts["Statecode_B"][selected_conflict]}")
-            st.text(f"Role: {conflicts["Role_B"][selected_conflict]}")
+            st.text(f"Role: {conflict_roles[conflicts["Role_B"][selected_conflict]]}")
             st.text(f"Conflict Severity: {conflicts["Severity_B"][selected_conflict]}")
 
