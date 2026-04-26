@@ -122,33 +122,43 @@ with st.container():
     st.dataframe(filtered_df, use_container_width=True)
 
 
-
 with st.container():
     selected_conflict = st.selectbox(
-    label="Which Conflict would you like to analyze in detail",
-    options=conflicts["Conflict_ID"].unique()
+        label="Which Conflict would you like to analyze in detail?",
+        options=conflicts["Conflict_ID"].unique()
     )
+
+    # 1. Isolate all rows for the selected conflict
+    conflict_data = conflicts[conflicts["Conflict_ID"] == selected_conflict]
+    
+    # 2. Calculate the maximum fatality level across ALL years of the conflict
+    max_fatality = conflict_data["Fatality_Level"].max()
+    
+    # 3. Sort by Year and grab the very last row for the end-of-conflict stats
+    row = conflict_data.sort_values(by="Year").iloc[-1]
+
     with st.container(border=True):
         col4, col5 = st.columns(2)
         with col4:
-            st.text(f"Duration: {conflicts["Start_Year"][selected_conflict]} - {conflicts["End_Year"][selected_conflict]}")
-            st.text(f"Fatality Level: {conflicts["Fatality_Level"][selected_conflict]}")
-            st.text(f"Conflict Outcome: {conflict_outcomes[conflicts["Outcome"][selected_conflict]]}")
+            st.write(f"**Duration:** {row['Start_Year']} - {row['End_Year']}")
+            # 4. Use the max_fatality variable we calculated above
+            st.write(f"**Fatality Level (Max):** {max_fatality}")
+            
         with col5:
-            st.text(f"Conflict Outcome: {conflict_outcomes[conflicts["Outcome"][selected_conflict]]}")
+            st.write(f"**Conflict Outcome:** {conflict_outcomes[row['Outcome']]}")
 
     col6, col7 = st.columns(2)
+    
     with col6:
         with st.container(border=True):
-            st.markdown("**Side A**")
-            st.text(f"State: {conflicts["Statecode_A"][selected_conflict]}")
-            st.text(f"Role: {conflict_roles[conflicts["Role_A"][selected_conflict]]}")
-            st.text(f"Conflict Severity: {conflicts["Severity_A"][selected_conflict]}")
+            st.subheader("Side A")
+            st.write(f"**State:** {row['Statecode_A']}")
+            st.write(f"**Role:** {conflict_roles[row['Role_A']]}")
+            st.write(f"**Conflict Severity:** {row['Severity_A']}")
     
     with col7:
         with st.container(border=True):
-            st.markdown("**Side B**")
-            st.text(f"State: {conflicts["Statecode_B"][selected_conflict]}")
-            st.text(f"Role: {conflict_roles[conflicts["Role_B"][selected_conflict]]}")
-            st.text(f"Conflict Severity: {conflicts["Severity_B"][selected_conflict]}")
-
+            st.subheader("Side B")
+            st.write(f"**State:** {row['Statecode_B']}")
+            st.write(f"**Role:** {conflict_roles[row['Role_B']]}")
+            st.write(f"**Conflict Severity:** {row['Severity_B']}")
