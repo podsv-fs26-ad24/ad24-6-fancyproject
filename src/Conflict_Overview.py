@@ -3,7 +3,10 @@ import streamlit as st
 import plotly.express as px
 import numpy as np
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide",
+                   page_title="Conflict Overview")
+
+st.sidebar.success("")
 
 ### Data Import
 conflicts = pd.read_parquet("./data/clean/conflicts.parquet")
@@ -74,6 +77,7 @@ fig.update_layout(
 
 ### Dashboard layout
 
+# Global Map with conflict count for each country
 st.title("Geopolitical Conflict & Trade Explorer")
 
 col1, col2, col3 = st.columns(3)
@@ -86,31 +90,57 @@ with col3:
     st.metric("Number of Countries involved in conflicts", f"{len(conflicts["Statecode_A"].unique())}")
 
 with st.container():
-    st.title("🌍 Global Conflict Involvement Map")
+    st.title("Global Conflict Involvement Map")
     st.markdown("This map shows the total number of unique conflicts each country has been involved in.")
     # Render Plotly map to Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
 
+with st.container():
+    # Table to filter and search specific conflicts
+    selected_countries = st.multiselect(
+        "Filter involved Countries",
+        options=conflicts["Statecode_A"].unique(),
+        default="USA"
+    )
+
+    min_year, max_year = st.slider(
+        "Value range",
+        min_value=int(conflicts["Year"].min()),
+        max_value=int(conflicts["Year"].max()),
+        value=(int(conflicts["Year"].min()), int(conflicts["Year"].max()))
+    )
+
+    filtered_df = conflicts[
+        conflicts["Statecode_A"].isin(selected_countries) &
+        conflicts["Year"].between(min_year, max_year)
+    ]
+
+    st.dataframe(filtered_df, use_container_width=True)
 
 
 
-selected_countries = st.multiselect(
-    "Filter involved Countries",
-    options=conflicts["Statecode_A"].unique(),
-    default="USA"
-)
+with st.container():
+    selected_conflict = st.selectbox(
+    label="Which Conflict would you like to analyze in detail",
+    options=conflicts["Conflict_ID"].unique()
+    )
+    with st.container():
+        st.text(f"Conflict Severity: {conflicts["Severity"][selected_conflict]}")
+        st.text(f"Fatality Level: {conflicts["Fatality_Level"][selected_conflict]}")
 
-min_year, max_year = st.slider(
-    "Value range",
-    min_value=int(conflicts["Year"].min()),
-    max_value=int(conflicts["Year"].max()),
-    value=(int(conflicts["Year"].min()), int(conflicts["Year"].max()))
-)
+    col4, col5 = st.columns(2)
+    with col4:
+        with st.container(border=True):
+            st.text("Side A")
+            st.text(f"State: {conflicts["Statecode_A"][selected_conflict]}")
+            st.text(f"Role: {conflicts["Role_A"][selected_conflict]}")
+            st.text(f"Conflict Severity: {conflicts["Severity_A"][selected_conflict]}")
+    
+    with col5:
+        with st.container(border=True):
+            st.text("Side B")
+            st.text(f"State: {conflicts["Statecode_B"][selected_conflict]}")
+            st.text(f"Role: {conflicts["Role_B"][selected_conflict]}")
+            st.text(f"Conflict Severity: {conflicts["Severity_B"][selected_conflict]}")
 
-filtered_df = conflicts[
-    conflicts["Statecode_A"].isin(selected_countries) &
-    conflicts["Year"].between(min_year, max_year)
-]
-
-st.dataframe(filtered_df, use_container_width=True)
