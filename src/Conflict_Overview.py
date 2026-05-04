@@ -8,7 +8,6 @@ import plotly.graph_objects as go
 st.set_page_config(layout="wide",
                    page_title="Conflict Overview")
 
-st.sidebar.success("")
 
 ### Data Import
 conflicts = pd.read_parquet("./data/clean/conflicts.parquet")
@@ -38,6 +37,53 @@ def get_conflicts_counts(data):
     
     return final_counts
 
+def get_country_alliances(country_code: str, year: int, data: pd.DataFrame) -> pd.DataFrame:
+    """Return all alliance partners a country had in a given year, with alliance types."""
+
+    # Match rows where the country appears on EITHER side
+    mask = (
+        ((data["Statecode_A"] == country_code) | (data["Statecode_B"] == country_code)) &
+        (data["Start_Year"] <= year) &
+        (data["End_Year"]   >= year)
+    )
+    active = data[mask].copy()
+
+    if active.empty:
+        return pd.DataFrame()
+
+    # Derive the partner country (the side that is NOT the selected country)
+    active["Partner_Code"] = active.apply(
+        lambda r: r["Statecode_B"] if r["Statecode_A"] == country_code else r["Statecode_A"],
+        axis=1
+    )
+    active["Partner_Name"] = active.apply(
+        lambda r: r["State_B"] if r["Statecode_A"] == country_code else r["State_A"],
+        axis=1
+    )
+
+    # Build a readable alliance type string from the binary flag columns
+    type_flags = {
+        "Defense":      "Defense Pact",
+        "Neutrality":   "Neutrality Pact",
+        "Nonaggression":"Non-Aggression Pact",
+        "Entente":      "Entente",
+    }
+    def alliance_types(row):
+        return ", ".join(label for col, label in type_flags.items() if row.get(col, 0) == 1)
+
+    active["Alliance Type"] = active.apply(alliance_types, axis=1)
+    active["Alliance Type"] = active["Alliance Type"].replace("", "Unspecified")
+
+    return active[["Partner_Code", "Partner_Name", "Alliance Type", "Start_Year", "End_Year"]] \
+               .drop_duplicates() \
+               .reset_index(drop=True) \
+               .rename(columns={
+                   "Partner_Code": "Country Code",
+                   "Partner_Name": "Partner Country",
+                   "Start_Year":   "Since",
+                   "End_Year":     "Until",
+               })
+
 
 df_conflict_counts = get_conflicts_counts(conflicts)
 df_conflict_counts["Log_Conflicts"] = np.log1p(df_conflict_counts["Total_Conflicts"])
@@ -47,33 +93,7 @@ df_conflict_counts["Log_Conflicts"] = np.log1p(df_conflict_counts["Total_Conflic
 
 
 
-# 4. Generate the Choropleth map using Plotly Express
-fig = px.choropleth(
-    df_conflict_counts,
-    locations="Statecode",
-    color="Log_Conflicts",
-    hover_name="Statecode",
-    color_continuous_scale="YlGnBu", # You can also try "Reds", "Viridis", or "Turbo"
-    labels={"Total_Conflicts": "Conflict Count"},
-    hover_data={"Log_Conflicts": False, "Total_Conflicts": True},
-)
 
-#manually define colorbar ticks
-legend_ticks = [1, 5, 10, 50, 100, 300]
-# Calculate where those ticks should physically sit on the log scale
-log_ticks = np.log1p(legend_ticks)
-
-# 4. Update the layout to override the colorbar and make it full screen
-fig.update_layout(
-    coloraxis_colorbar=dict(
-        title="Conflict Count",
-        tickvals=log_ticks,       # Position ticks at the log scale values
-        ticktext=legend_ticks     # But display the real numbers as text!
-    ),
-    geo=dict(showframe=False, showcoastlines=True, projection_type='equirectangular'),
-    margin={"r":0,"t":0,"l":0,"b":0},
-    height=750
-)
 
 
 
@@ -95,6 +115,33 @@ with col3:
 with st.container():
     st.title("Global Conflict Involvement Map")
     st.markdown("This map shows the total number of unique conflicts each country has been involved in.")
+    # Generate the Choropleth map using Plotly Express
+    fig = px.choropleth(
+        df_conflict_counts,
+        locations="Statecode",
+        color="Log_Conflicts",
+        hover_name="Statecode",
+        color_continuous_scale="YlGnBu", # You can also try "Reds", "Viridis", or "Turbo"
+        labels={"Total_Conflicts": "Conflict Count"},
+        hover_data={"Log_Conflicts": False, "Total_Conflicts": True},
+    )
+
+    #manually define colorbar ticks
+    legend_ticks = [1, 5, 10, 50, 100, 300]
+    # Calculate where those ticks should physically sit on the log scale
+    log_ticks = np.log1p(legend_ticks)
+
+    # 4. Update the layout to override the colorbar and make it full screen
+    fig.update_layout(
+        coloraxis_colorbar=dict(
+            title="Conflict Count",
+            tickvals=log_ticks,       # Position ticks at the log scale values
+            ticktext=legend_ticks     # But display the real numbers as text!
+        ),
+        geo=dict(showframe=False, showcoastlines=True, projection_type='equirectangular'),
+        margin={"r":0,"t":0,"l":0,"b":0},
+        height=750
+    )
     # Render Plotly map to Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
@@ -246,20 +293,46 @@ with st.container(border=True):
             st.write(f"**Highest Severity:** {row["Severity"]}")
 
     col6, col7 = st.columns(2)
-    
+
     with col6:
         with st.container(border=True):
             st.subheader("Side A")
-            st.write(f"**State:** {row["Statecode_A"]}")
-            st.write(f"**Role:** {row["Role_A"]}")
-            st.write(f"**Conflict Severity:** {row["Severity_A"]}")
-    
+            st.write(f"**State:** {row['Statecode_A']}")
+            st.write(f"**Role:** {row['Role_A']}")
+            st.write(f"**Conflict Severity:** {row['Severity_A']}")
+
+            st.markdown("**Alliances at conflict start:**")
+            alliances_a = get_country_alliances(
+                row["Statecode_A"], row["Start_Year"], alliances
+            )
+            if alliances_a.empty:
+                st.info("No alliance data found for this country / year.")
+            else:
+                st.dataframe(
+                    alliances_a,
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
     with col7:
         with st.container(border=True):
             st.subheader("Side B")
-            st.write(f"**State:** {row["Statecode_B"]}")
-            st.write(f"**Role:** {row["Role_B"]}")
-            st.write(f"**Conflict Severity:** {row["Severity_B"]}")
+            st.write(f"**State:** {row['Statecode_B']}")
+            st.write(f"**Role:** {row['Role_B']}")
+            st.write(f"**Conflict Severity:** {row['Severity_B']}")
+
+            st.markdown("**Alliances at conflict start:**")
+            alliances_b = get_country_alliances(
+                row["Statecode_B"], row["Start_Year"], alliances
+            )
+            if alliances_b.empty:
+                st.info("No alliance data found for this country / year.")
+            else:
+                st.dataframe(
+                    alliances_b,
+                    use_container_width=True,
+                    hide_index=True,
+                )
 
 
 
@@ -323,6 +396,30 @@ with st.container(border=True):
             height=450,
             font=dict(size=14)
         )
+
+        # Highlight conflict duration: vline if < 1 year, red band if > 1
+        if row["Start_Year"] == row["End_Year"]:
+            fig_line.add_vline(
+                x=row["Start_Year"],
+                line_color="red",
+                line_width=2,
+                line_dash="dash",
+                annotation_text="Conflict",
+                annotation_position="top",
+                annotation=dict(font_size=12, font_color="red")
+            )
+        else:
+            fig_line.add_vrect(
+                x0=row["Start_Year"],
+                x1=row["End_Year"],
+                fillcolor="red",
+                opacity=0.15,
+                layer="below",
+                line_width=0,
+                annotation_text="Conflict Period",
+                annotation_position="top left",
+                annotation=dict(font_size=12, font_color="red")
+            )
 
         st.plotly_chart(fig_line, use_container_width=True)
 
