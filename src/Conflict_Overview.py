@@ -16,31 +16,33 @@ alliances = pd.read_parquet("./data/clean/alliances.parquet")
 
 
 
-### Data Processing
+# Data Processing
+#########################################################
 
 @st.cache_data
-def get_conflicts_counts(data):
-    
-    # 1. Extract unique Conflict_ID and Statecode pairs to avoid double-counting years
+def get_conflicts_counts(data: pd.DataFrame):
+    """Return df with conflict counts for each country"""
+    # Extract unique Conflict_ID and Statecode pairs to avoid double-counting years
     state_a = data[["Conflict_ID", "Statecode_A"]].rename(columns={"Statecode_A": "Statecode"})
     state_b = data[["Conflict_ID", 'Statecode_B']].rename(columns={"Statecode_B": "Statecode"})
     
     # Combine lists and drop duplicates so each country is counted once per conflict
     unique_conflicts = pd.concat([state_a, state_b]).drop_duplicates()
     
-    # 2. Count total unique conflicts per country
+    # Count total unique conflicts per country
     counts = unique_conflicts["Statecode"].value_counts().reset_index()
     counts.columns = ["Statecode", "Total_Conflicts"]
     
-    # Group again because historical entities (e.g. East/West Germany -> DEU) merge into single modern codes
+    # Groupby State because historical entities (e.g. East/West Germany -> DEU) merge into single Entity
     final_counts = counts.groupby("Statecode")["Total_Conflicts"].sum().reset_index()
     
     return final_counts
 
+
 def get_country_alliances(country_code: str, year: int, data: pd.DataFrame) -> pd.DataFrame:
     """Return all alliance partners a country had in a given year, with alliance types."""
 
-    # Match rows where the country appears on EITHER side
+    # Match rows where the country appears on either side
     mask = (
         ((data["Statecode_A"] == country_code) | (data["Statecode_B"] == country_code)) &
         (data["Start_Year"] <= year) &
@@ -48,10 +50,11 @@ def get_country_alliances(country_code: str, year: int, data: pd.DataFrame) -> p
     )
     active = data[mask].copy()
 
+    # if no alliances -> return empty df
     if active.empty:
         return pd.DataFrame()
 
-    # Derive the partner country (the side that is NOT the selected country)
+    # Derive the partner country (the side that is not the selected country)
     active["Partner_Code"] = active.apply(
         lambda r: r["Statecode_B"] if r["Statecode_A"] == country_code else r["Statecode_A"],
         axis=1
@@ -70,7 +73,7 @@ def get_country_alliances(country_code: str, year: int, data: pd.DataFrame) -> p
     }
     def alliance_types(row):
         return ", ".join(label for col, label in type_flags.items() if row.get(col, 0) == 1)
-
+    # Apply function to get Alliance Type Column from One-Hot encoded Alliance columns
     active["Alliance Type"] = active.apply(alliance_types, axis=1)
     active["Alliance Type"] = active["Alliance Type"].replace("", "Unspecified")
 
@@ -85,24 +88,18 @@ def get_country_alliances(country_code: str, year: int, data: pd.DataFrame) -> p
                })
 
 
+# use helper function to create new df with conflict counts
 df_conflict_counts = get_conflicts_counts(conflicts)
 df_conflict_counts["Log_Conflicts"] = np.log1p(df_conflict_counts["Total_Conflicts"])
 
 
-### Generate Figure Objects
 
+# Dashboard layout
+############################################################################
 
-
-
-
-
-
-
-### Dashboard layout
-
-# Global Map with conflict count for each country
 st.title("Geopolitical Conflict & Trade Explorer")
 
+# Show stats for conflict dataset
 col1, col2, col3 = st.columns(3)
 with col1:
     st.metric("Recorded Conflicts", f"{len(conflicts["Conflict_ID"].unique())}")
@@ -112,6 +109,7 @@ with col2:
 with col3:
     st.metric("Number of Countries involved in conflicts", f"{len(conflicts["Statecode_A"].unique())}")
 
+# Global Map with conflict count for each country
 with st.container():
     st.title("Global Conflict Involvement Map")
     st.markdown("This map shows the total number of unique conflicts each country has been involved in.")
@@ -121,7 +119,7 @@ with st.container():
         locations="Statecode",
         color="Log_Conflicts",
         hover_name="Statecode",
-        color_continuous_scale="YlGnBu", # You can also try "Reds", "Viridis", or "Turbo"
+        color_continuous_scale="YlGnBu", 
         labels={"Total_Conflicts": "Conflict Count"},
         hover_data={"Log_Conflicts": False, "Total_Conflicts": True},
     )
@@ -231,6 +229,9 @@ with st.container(border=True):
             })
 
 
+# Conflict Analyzer
+############################################
+
 with st.container(border=True):
     st.markdown("### Conflict Analyzer")
     selected_conflict = st.selectbox(
@@ -238,13 +239,13 @@ with st.container(border=True):
         options=conflicts["Conflict_ID"].unique()
     )
 
-    # 1. Isolate all rows for the selected conflict
+    # Isolate all rows for the selected conflict
     conflict_data = conflicts[conflicts["Conflict_ID"] == selected_conflict]
     
-    # 2. Calculate the maximum fatality level across ALL years of the conflict
+    # Calculate the maximum fatality level across ALL years of the conflict
     max_fatality = conflict_data["Fatality_Level"].max()
     
-    # 3. Sort by Year and grab the very last row for the end-of-conflict stats
+    # Sort by Year and grab the very last row for the end-of-conflict stats
     row = conflict_data.sort_values(by="Year").iloc[-1]
 
 
@@ -333,6 +334,84 @@ with st.container(border=True):
                     use_container_width=True,
                     hide_index=True,
                 )
+    
+        # Conflicts per year chart — ± 5 years around the conflict start
+    with st.container(border=True):
+        st.subheader("Conflict Involvements Around This Period")
+
+        involved_countries = [row["Statecode_A"], row["Statecode_B"]]
+        year_window = range(row["Start_Year"] - 5, row["End_Year"] + 5 + 1)
+
+        # Keep rows where either side matches one of the two countries
+        conflicts_window = conflicts[
+            (conflicts["Statecode_A"].isin(involved_countries) |
+             conflicts["Statecode_B"].isin(involved_countries)) &
+            (conflicts["Start_Year"].isin(year_window))
+        ].copy()
+
+        # Tag each row with which of the two countries it belongs to
+        rows = []
+        for country in involved_countries:
+            mask = (
+                (conflicts_window["Statecode_A"] == country) |
+                (conflicts_window["Statecode_B"] == country)
+            )
+            per_country = conflicts_window[mask].copy()
+            per_country["Country"] = country
+            rows.append(per_country)
+
+        conflicts_tagged = pd.concat(rows)
+
+        # Count unique conflicts per country per start year
+        conflicts_per_year = (
+            conflicts_tagged
+            .drop_duplicates(subset=["Conflict_ID", "Country"])
+            .groupby(["Start_Year", "Country"])
+            .size()
+            .reset_index(name="Conflict_Count")
+        )
+
+        fig_activity = px.bar(
+            conflicts_per_year,
+            x="Start_Year",
+            y="Conflict_Count",
+            color="Country",
+            barmode="group",
+            labels={"Start_Year": "Year", "Conflict_Count": "Number of Conflicts", "Country": "Country"},
+            color_discrete_sequence=["#225ea8", "#7fcdbb"]  # matches your Side A / Side B map colors
+        )
+
+        # Highlight the conflict duration
+        if row["Start_Year"] == row["End_Year"]:
+            fig_activity.add_vline(
+                x=row["Start_Year"],
+                line_color="red",
+                line_width=2,
+                line_dash="dash",
+                annotation_text=f"Conflict {row["Conflict_ID"]}",
+                annotation_position="top",
+                annotation=dict(font_size=12, font_color="red")
+            )
+        else:
+            fig_activity.add_vrect(
+                x0=row["Start_Year"],
+                x1=row["End_Year"],
+                fillcolor="red",
+                opacity=0.15,
+                layer="below",
+                line_width=0,
+                annotation_text="This Conflict",
+                annotation_position="top left",
+                annotation=dict(font_size=12, font_color="red")
+            )
+
+        fig_activity.update_layout(
+            height=350,
+            font=dict(size=13),
+            xaxis=dict(tickmode="linear", dtick=1)
+        )
+
+        st.plotly_chart(fig_activity, use_container_width=True)
 
 
 
