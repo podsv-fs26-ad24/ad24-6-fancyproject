@@ -302,7 +302,7 @@ with st.container(border=True):
             st.write(f"**Role:** {row['Role_A']}")
             st.write(f"**Conflict Severity:** {row['Severity_A']}")
 
-            st.markdown("**Alliances at conflict start:**")
+            st.markdown("**Alliances during conflict:**")
             alliances_a = get_country_alliances(
                 row["Statecode_A"], row["Start_Year"], alliances
             )
@@ -322,7 +322,7 @@ with st.container(border=True):
             st.write(f"**Role:** {row['Role_B']}")
             st.write(f"**Conflict Severity:** {row['Severity_B']}")
 
-            st.markdown("**Alliances at conflict start:**")
+            st.markdown("**Alliances during conflict:**")
             alliances_b = get_country_alliances(
                 row["Statecode_B"], row["Start_Year"], alliances
             )
