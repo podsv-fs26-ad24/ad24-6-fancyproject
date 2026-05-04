@@ -125,7 +125,7 @@ with st.container():
     )
 
     #manually define colorbar ticks
-    legend_ticks = [1, 5, 10, 50, 100, 300]
+    legend_ticks = [5, 25, 50, 100, 200, 300]
     # Calculate where those ticks should physically sit on the log scale
     log_ticks = np.log1p(legend_ticks)
 
@@ -337,7 +337,7 @@ with st.container(border=True):
     
         # Conflicts per year chart — ± 5 years around the conflict start
     with st.container(border=True):
-        st.subheader("Conflict Involvements Around This Period")
+        st.markdown(f"#### Conflict Involvements Around Conflict {row["Conflict_ID"]}")
 
         involved_countries = [row["Statecode_A"], row["Statecode_B"]]
         year_window = range(row["Start_Year"] - 5, row["End_Year"] + 5 + 1)
@@ -381,7 +381,7 @@ with st.container(border=True):
             color_discrete_sequence=["#225ea8", "#7fcdbb"]  # matches your Side A / Side B map colors
         )
 
-        # Highlight the conflict duration
+        # Highlight the conflict duration with a red line if duration <=1 year
         if row["Start_Year"] == row["End_Year"]:
             fig_activity.add_vline(
                 x=row["Start_Year"],
@@ -392,6 +392,7 @@ with st.container(border=True):
                 annotation_position="top",
                 annotation=dict(font_size=12, font_color="red")
             )
+            # Highlight the conflict duration with a red block if duration >1 year
         else:
             fig_activity.add_vrect(
                 x0=row["Start_Year"],
@@ -400,7 +401,7 @@ with st.container(border=True):
                 opacity=0.15,
                 layer="below",
                 line_width=0,
-                annotation_text="This Conflict",
+                annotation_text=f"Conflict {row["Conflict_ID"]}",
                 annotation_position="top left",
                 annotation=dict(font_size=12, font_color="red")
             )
@@ -450,26 +451,38 @@ with st.container(border=True):
         trade_line = trade_line.sort_values("Year")
 
         if not trade_line.empty:
-            state_a = trade_line["Statecode_A"].iloc[0] # e.g., "USA"
-            state_b = trade_line["Statecode_B"].iloc[0] # e.g., "CAN"
-    
-            # Create accurate, descriptive labels for the legend
-            flow1_label = f"{state_b} \u2192 {state_a}"  # e.g., "CAN -> USA"
-            flow2_label = f"{state_a} \u2192 {state_b}"  # e.g., "USA -> CAN"
-    
-            # Rename the columns in your temporary dataframe
-            df_line = trade_line.rename(columns={
-                "Flow_1": flow1_label,
-                "Flow_2": flow2_label
-            })
-        # Line chart
-        fig_line = px.line(
-        df_line,
-        x="Year",
-        y=[flow1_label, flow2_label], # Plotly will use these for the legend
-        labels={"value": "Trade flow [Mio USD]", "variable": "Trade Direction"},
-        color_discrete_sequence= px.colors.qualitative.Set3
-    )
+            fig_line = go.Figure()
+
+            # Iterate over every unique country pair in the filtered data
+            for _, pair_row in trade_line[["Statecode_A", "Statecode_B"]].drop_duplicates().iterrows():
+                state_a = pair_row["Statecode_A"]
+                state_b = pair_row["Statecode_B"]
+
+                pair_data = trade_line[
+                    (trade_line["Statecode_A"] == state_a) &
+                    (trade_line["Statecode_B"] == state_b)
+                ].sort_values("Year")
+
+                # Flow 1: B → A
+                fig_line.add_trace(go.Scatter(
+                    x=pair_data["Year"],
+                    y=pair_data["Flow_1"],
+                    mode="lines+markers",
+                    name=f"{state_b} → {state_a}"
+                ))
+
+                # Flow 2: A → B
+                fig_line.add_trace(go.Scatter(
+                    x=pair_data["Year"],
+                    y=pair_data["Flow_2"],
+                    mode="lines+markers",
+                    name=f"{state_a} → {state_b}"
+                ))
+
+            fig_line.update_layout(
+                yaxis_title="Trade flow [Mio USD]",
+                legend_title="Trade Direction",
+            )
 
         fig_line.update_layout(
             height=450,
@@ -582,11 +595,10 @@ with st.container(border=True):
                 )])
 
                 fig.update_layout(
-                    title_text=f"Multilateral Trade Network ({selected_year})", 
                     font_size=15,
                     height=600 # Slightly taller to accommodate more nodes
                 )
-
+                st.markdown(f"#### Multilateral Trade Network ({selected_year})")
                 st.plotly_chart(fig, use_container_width=True, theme=None)
             else:
                 st.warning("No trade data available between these selected countries for this year.")
