@@ -98,6 +98,7 @@ df_conflict_counts["Log_Conflicts"] = np.log1p(df_conflict_counts["Total_Conflic
 ############################################################################
 
 st.title("Geopolitical Conflict & Trade Explorer")
+st.subheader("Military Interstate Disputes")
 
 # Show stats for conflict dataset
 col1, col2, col3 = st.columns(3)
@@ -107,11 +108,11 @@ with col2:
     year_min, year_max = conflicts["Start_Year"].min(), conflicts["End_Year"].max()
     st.metric("Year Range", f"{year_min} - {year_max}")
 with col3:
-    st.metric("Number of Countries involved in conflicts", f"{len(conflicts["Statecode_A"].unique())}")
+    st.metric("Number of Countries Involved in Conflicts", f"{len(conflicts["Statecode_A"].unique())}")
 
 # Global Map with conflict count for each country
-with st.container():
-    st.title("Global Conflict Involvement Map")
+with st.container(border=True):
+    st.markdown("### Global Conflict Involvement Map")
     st.markdown("This map shows the total number of unique conflicts each country has been involved in.")
     # Generate the Choropleth map using Plotly Express
     fig = px.choropleth(
@@ -146,7 +147,7 @@ with st.container():
 
 with st.container(border=True):
     st.markdown("### Conflict Browser")
-
+    st.markdown("Use the Filters to search for specific conflicts in the conflict dataset.")
     # Table to filter and search specific conflicts
     selected_countries = st.multiselect(
         "Filter involved Countries",
@@ -234,6 +235,7 @@ with st.container(border=True):
 
 with st.container(border=True):
     st.markdown("### Conflict Analyzer")
+    st.markdown("Choose a conflict you want to analyze in depth by entering a Conflict_ID from the conflict browser above.")
     selected_conflict = st.selectbox(
         label="Which Conflict would you like to analyze in detail?",
         options=conflicts["Conflict_ID"].unique()
