@@ -483,7 +483,9 @@ with st.container(border=True):
     ### Trade
     with st.container(border=True):
         st.markdown("### Trade")
-
+        st.markdown("By default the countries involved in the selected conflict are selected in the filter and the year"
+        " is set to the start of the selected conflict. The filters can be adjusted to expand the scope of your analysis " \
+        "beyond a single conflict.")
         # by default select countries from conflict with option to add more countries
         selected_countries_trade = st.multiselect(
         "Filter Countries",
