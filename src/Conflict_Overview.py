@@ -13,7 +13,7 @@ st.set_page_config(layout="wide",
 conflicts = pd.read_parquet("./data/clean/conflicts.parquet")
 trade = pd.read_parquet("./data/clean/trade.parquet")
 alliances = pd.read_parquet("./data/clean/alliances.parquet")
-
+milex = pd.read_parquet("./data/clean/milex.parquet")
 
 
 # Data Processing
@@ -282,7 +282,7 @@ with st.container(border=True):
 
 
     with st.container(border=True):
-        st.subheader("Stats")
+        st.subheader(f"Stats for Conflict {row['Conflict_ID']}")
         col4, col5 = st.columns(2)
         with col4:
             st.write(f"**Duration:** {row["Start_Year"]} - {row["End_Year"]}")
@@ -413,8 +413,67 @@ with st.container(border=True):
         )
 
         st.plotly_chart(fig_activity, use_container_width=True)
+    
+    # Military expenditure year chart — ± 5 years around the conflict start
+    with st.container(border=True):
+            st.markdown(
+                f"#### Military Expenditure Around Conflict {row['Conflict_ID']} "
+                f'<span title=" Data available from 1988 - 2024" '
+                f'style="cursor:help; font-size:1rem;">ℹ️</span>',
+                unsafe_allow_html=True
+            )
 
+            milex_window = milex[
+                milex["Statecode"].isin([row["Statecode_A"], row["Statecode_B"]]) &
+                milex["Year"].between(row["Start_Year"] - 5, row["End_Year"] + 5)
+            ].copy()
 
+            if milex_window.empty:
+                st.info("No military expenditure data available for these countries in this period.")
+            else:
+                fig_milex = px.line(
+                    milex_window,
+                    x="Year",
+                    y="Expenditure",
+                    color="Statecode",
+                    markers=True,
+                    labels={"Expenditure": "Military Expenditure [Mio. USD]", "Year": "Year"},
+                    color_discrete_map={
+                        row["Statecode_A"]: "#225ea8",
+                        row["Statecode_B"]: "#7fcdbb",
+                    }
+                )
+
+                if row["Start_Year"] == row["End_Year"]:
+                    fig_milex.add_vline(
+                        x=row["Start_Year"],
+                        line_color="red",
+                        line_width=2,
+                        line_dash="dash",
+                        annotation_text=f"Conflict {row['Conflict_ID']}",
+                        annotation_position="top",
+                        annotation=dict(font_size=12, font_color="red")
+                    )
+                else:
+                    fig_milex.add_vrect(
+                        x0=row["Start_Year"],
+                        x1=row["End_Year"],
+                        fillcolor="red",
+                        opacity=0.15,
+                        layer="below",
+                        line_width=0,
+                        annotation_text=f"Conflict {row['Conflict_ID']}",
+                        annotation_position="top left",
+                        annotation=dict(font_size=12, font_color="red")
+                    )
+
+                fig_milex.update_layout(
+                    height=350,
+                    font=dict(size=13),
+                    xaxis=dict(tickmode="linear", dtick=1)
+                )
+
+                st.plotly_chart(fig_milex, use_container_width=True)
 
 
 ##########################################
