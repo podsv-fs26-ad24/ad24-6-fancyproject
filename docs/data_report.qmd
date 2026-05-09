@@ -16,32 +16,32 @@ Typically, in the exploratory analysis of the acquired raw data, quality and oth
 | Military Expenditure | [Link](https://www.sipri.org/databases/milex) | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/SIPRI-Milex-data-1949-2024_2.xlsx) |       
 
 
-### Details Dataset 1
-**Citation:** Glenn Palmer, Vito D’Orazio, Michael Kenwick and Matthew Lane. 2015. The MID4 Data Set, 2002-2010. Conflict Management and Peace Science, 32(2), pp. 222-242.
-**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.
+### Details Dataset 1  
+**Citation:** Glenn Palmer, Vito D’Orazio, Michael Kenwick and Matthew Lane. 2015. The MID4 Data Set, 2002-2010. Conflict Management and Peace Science, 32(2), pp. 222-242.  
+**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.  
 **Description:** The dataset contains 10,358 observations and 54 variables describing dyadic militarized interstate disputes. It includes identifiers for both states in each dyad, timing variables such as start and end dates, and coded dispute characteristics such as outcome, settlement type, hostility levels, fatality level, revisionist status, and dispute duration.
-Most variables are numeric codes, while country abbreviations and names are stored as text. Missing data is minimal, with nearly all variables complete and only a small number of missing values.
+Most variables are numeric codes, while country abbreviations and names are stored as text. Missing data is minimal, with nearly all variables complete and only a small number of missing values.  
 
-### Details Dataset 2
-**Citation:** Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press.  
-**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.
+### Details Dataset 2  
+**Citation:** Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press.    
+**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.  
 **Description:** The dataset contains 148,258 observations and 19 variables describing yearly dyadic alliance relationships between pairs of states from 1816 to 2012. It includes country identifiers and names for both states in each dyad, alliance start and end dates, censoring indicators, and coded alliance types such as defense, neutrality, nonaggression, and entente.
-Most variables are numeric codes or binary indicators, while the two state-name variables are stored as text. Missing data is concentrated mainly in the dyad end-date variables, which likely reflects alliances that had no recorded end date or were still ongoing within the dataset period.
+Most variables are numeric codes or binary indicators, while the two state-name variables are stored as text. Missing data is concentrated mainly in the dyad end-date variables, which likely reflects alliances that had no recorded end date or were still ongoing within the dataset period.  
 
-### Details Dataset 3
-**Citation:** Barbieri, Katherine and Omar M. G. Omar Keshk. 2016. Correlates of War Project Trade Data Set Codebook, Version 4.0. Online: https://correlatesofwar.org.
-**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.
-**Description:** The dataset contains 886,828 observations and 23 variables describing yearly dyadic trade flows between pairs of states. It includes country codes for both states, the year of observation, importer indicators, bilateral trade-flow measures, smoothed trade values, and indicators for trade spikes or dips. Most variables are numeric, including trade-flow values, binary event indicators, source codes, and version information. The dataset appears complete, with no missing values across the variables.
+### Details Dataset 3  
+**Citation:** Barbieri, Katherine and Omar M. G. Omar Keshk. 2016. Correlates of War Project Trade Data Set Codebook, Version 4.0. Online: https://correlatesofwar.org.  
+**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.  
+**Description:** The dataset contains 886,828 observations and 23 variables describing yearly dyadic trade flows between pairs of states. It includes country codes for both states, the year of observation, importer indicators, bilateral trade-flow measures, smoothed trade values, and indicators for trade spikes or dips. Most variables are numeric, including trade-flow values, binary event indicators, source codes, and version information. The dataset appears complete, with no missing values across the variables.  
 
-### Details Dataset 4
-**Citation:** Information from the Stockholm International Peace Research Institute (SIPRI) [DOI](https://doi.org/10.55163/CQGC9685)
-**License:** [Terms and Conditions](https://www.sipri.org/about/terms-and-conditions)
+### Details Dataset 4  
+**Citation:** Information from the Stockholm International Peace Research Institute (SIPRI) [DOI](https://doi.org/10.55163/CQGC9685)  
+**License:** [Terms and Conditions](https://www.sipri.org/about/terms-and-conditions)  
 **Description:** The CSV dataset contains 173 country-level observations and 38 variables showing military expenditure per capita from 1988 to 2024. Each row represents a country, while each year column reports the corresponding per-capita military spending value, with missing values indicating unavailable data or years where figures were not reported.
-The Excel workbook contains SIPRI military expenditure data organized across multiple sheets, including regional totals, local-currency spending, constant and current US dollar values, military spending as a share of GDP, per-capita spending, and spending as a share of government expenditure. The data covers long-term country and regional military expenditure trends from 1988 to 2024
+The Excel workbook contains SIPRI military expenditure data organized across multiple sheets, including regional totals, local-currency spending, constant and current US dollar values, military spending as a share of GDP, per-capita spending, and spending as a share of government expenditure. The data covers long-term country and regional military expenditure trends from 1988 to 2024.  
 
 
 
-#### Data Catalogue
+#### Data Catalogue  
 
 
 : Data catalogue for Dataset 1. {#tbl-data-catalogue}
@@ -207,7 +207,7 @@ The Excel workbook contains SIPRI military expenditure data organized across mul
 
 ```{=html}
 <iframe 
-  src="../eda/conflicts_eda.html" 
+  src="reports/conflicts_eda.html" 
   width="100%" 
   height="900px" 
   style="border: none;">
