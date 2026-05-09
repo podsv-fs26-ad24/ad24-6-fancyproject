@@ -29,27 +29,8 @@ Typically, in the exploratory analysis of the acquired raw data, quality and oth
 **Description:** The dataset contains 10,358 observations and 54 variables describing dyadic militarized interstate disputes. It includes identifiers for both states in each dyad, timing variables such as start and end dates, and coded dispute characteristics such as outcome, settlement type, hostility levels, fatality level, revisionist status, and dispute duration.
 Most variables are numeric codes, while country abbreviations and names are stored as text. Missing data is minimal, with nearly all variables complete and only a small number of missing values.  
 
-### Details Dataset 2  
-**Citation:** Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press.    
-**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.  
-**Description:** The dataset contains 148,258 observations and 19 variables describing yearly dyadic alliance relationships between pairs of states from 1816 to 2012. It includes country identifiers and names for both states in each dyad, alliance start and end dates, censoring indicators, and coded alliance types such as defense, neutrality, nonaggression, and entente.
-Most variables are numeric codes or binary indicators, while the two state-name variables are stored as text. Missing data is concentrated mainly in the dyad end-date variables, which likely reflects alliances that had no recorded end date or were still ongoing within the dataset period.  
-
-### Details Dataset 3  
-**Citation:** Barbieri, Katherine and Omar M. G. Omar Keshk. 2016. Correlates of War Project Trade Data Set Codebook, Version 4.0. Online: https://correlatesofwar.org.  
-**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.  
-**Description:** The dataset contains 886,828 observations and 23 variables describing yearly dyadic trade flows between pairs of states. It includes country codes for both states, the year of observation, importer indicators, bilateral trade-flow measures, smoothed trade values, and indicators for trade spikes or dips. Most variables are numeric, including trade-flow values, binary event indicators, source codes, and version information. The dataset appears complete, with no missing values across the variables.  
-
-### Details Dataset 4  
-**Citation:** Information from the Stockholm International Peace Research Institute (SIPRI) [DOI](https://doi.org/10.55163/CQGC9685)  
-**License:** [Terms and Conditions](https://www.sipri.org/about/terms-and-conditions)  
-**Description:** The CSV dataset contains 173 country-level observations and 38 variables showing military expenditure per capita from 1988 to 2024. Each row represents a country, while each year column reports the corresponding per-capita military spending value, with missing values indicating unavailable data or years where figures were not reported.
-The Excel workbook contains SIPRI military expenditure data organized across multiple sheets, including regional totals, local-currency spending, constant and current US dollar values, military spending as a share of GDP, per-capita spending, and spending as a share of government expenditure. The data covers long-term country and regional military expenditure trends from 1988 to 2024.  
-
-
 
 #### Data Catalogue  
-
 
 : Data catalogue for Dataset 1. {#tbl-data-catalogue}
 
@@ -108,9 +89,31 @@ The Excel workbook contains SIPRI military expenditure data organized across mul
 | 51 | `new` | Integer | 0–1; binary indicator; no missing values | Indicates whether the observation represents a new dispute or new episode. |
 | 52 | `change` | Integer | 0, 1, 2, 3, or 2701; coded value; no missing values | Indicates whether there was a recorded change in the dispute. |
 | 53 | `changetype_1` | Integer | 0–11; coded category; no missing values | First coded type of dispute change. |
-| 54 | `changetype_2` | Integer | 0–2; coded category; no missing values | Second coded type of dispute change. |
+| 54 | `changetype_2` | Integer | 0–2; coded category; no missing values | Second coded type of dispute change. |  
+  
+  
+  
+#### Data Chracteristics and Quality
 
+**EDA Report Dataset 1**
+```{=html}
+<iframe 
+  src="reports/conflicts_eda.html" 
+  width="100%" 
+  height="900px" 
+  style="border: none;">
+</iframe>
+```
+  
 
+### Details Dataset 2  
+**Citation:** Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press.    
+**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.  
+**Description:** The dataset contains 148,258 observations and 19 variables describing yearly dyadic alliance relationships between pairs of states from 1816 to 2012. It includes country identifiers and names for both states in each dyad, alliance start and end dates, censoring indicators, and coded alliance types such as defense, neutrality, nonaggression, and entente.
+Most variables are numeric codes or binary indicators, while the two state-name variables are stored as text. Missing data is concentrated mainly in the dyad end-date variables, which likely reflects alliances that had no recorded end date or were still ongoing within the dataset period.   
+  
+
+#### Data Catalogue 
 
 : Data catalogue for Dataset 2. {#tbl-data-catalogue}
 
@@ -135,7 +138,28 @@ The Excel workbook contains SIPRI military expenditure data organized across mul
 | 17 | `entente` | Float | 0.0–1.0; 24 missing values | Indicates whether the alliance includes an entente commitment. |
 | 18 | `year` | Integer | 1816–2012; no missing values | Year of the dyad-year observation. |
 | 19 | `version` | Float | 4.1 only; no missing values | Dataset version number. |
+  
+  
+  #### Data Chracteristics and Quality
 
+**EDA Report Dataset 2**  
+```{=html}
+<iframe 
+  src="reports/alliances_eda.html" 
+  width="100%" 
+  height="900px" 
+  style="border: none;">
+</iframe>
+```
+
+
+### Details Dataset 3  
+**Citation:** Barbieri, Katherine and Omar M. G. Omar Keshk. 2016. Correlates of War Project Trade Data Set Codebook, Version 4.0. Online: https://correlatesofwar.org.  
+**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.  
+**Description:** The dataset contains 886,828 observations and 23 variables describing yearly dyadic trade flows between pairs of states. It includes country codes for both states, the year of observation, importer indicators, bilateral trade-flow measures, smoothed trade values, and indicators for trade spikes or dips. Most variables are numeric, including trade-flow values, binary event indicators, source codes, and version information. The dataset appears complete, with no missing values across the variables.
+  
+  
+  #### Data Catalogue 
 
 : Data catalogue for Dataset 3. {#tbl-data-catalogue}
 
@@ -164,7 +188,27 @@ The Excel workbook contains SIPRI military expenditure data organized across mul
 | 21 | `source1` | Float | -9.0 = missing information; otherwise 0.0–6.0 coded category | Source code for state 1’s trade-flow data. |
 | 22 | `source2` | Float | -9.0 = missing information; otherwise 0.0–6.0 coded category | Source code for state 2’s trade-flow data. |
 | 23 | `version` | Integer | 4 only; no missing values | Dataset version number. |
+  
+  
+#### Data Chracteristics and Quality
+**EDA Report Dataset 3**
+```{=html}
+<iframe 
+  src="reports/trade_eda.html" 
+  width="100%" 
+  height="900px" 
+  style="border: none;">
+</iframe>
+```
 
+### Details Dataset 4  
+**Citation:** Information from the Stockholm International Peace Research Institute (SIPRI) [DOI](https://doi.org/10.55163/CQGC9685)  
+**License:** [Terms and Conditions](https://www.sipri.org/about/terms-and-conditions)  
+**Description:** The CSV dataset contains 173 country-level observations and 38 variables showing military expenditure per capita from 1988 to 2024. Each row represents a country, while each year column reports the corresponding per-capita military spending value, with missing values indicating unavailable data or years where figures were not reported.
+The Excel workbook contains SIPRI military expenditure data organized across multiple sheets, including regional totals, local-currency spending, constant and current US dollar values, military spending as a share of GDP, per-capita spending, and spending as a share of government expenditure. The data covers long-term country and regional military expenditure trends from 1988 to 2024.  
+  
+  
+#### Data Catalogue 
 
 : Data catalogue for Dataset 4. {#tbl-data-catalogue}
 
@@ -210,84 +254,114 @@ The Excel workbook contains SIPRI military expenditure data organized across mul
 | 38 | `2024` | Float | 1.7–4,988.8; 25 missing values | Military expenditure per capita in 2024. |
 
 
-#### Data Chracteristics and Quality
 
+#### Data Chracteristics and Quality
+**EDA Report Dataset 4**  
 ```{=html}
 <iframe 
-  src="reports/conflicts_eda.html" 
+  src="reports/milex_eda.html" 
   width="100%" 
   height="900px" 
   style="border: none;">
 </iframe>
-
-
-The results the exploratory data analysis should be summarised here (code and full output in the `eda` subfolder) and the implications for the subsequent data pre-processing, visualization design and implementation steps should be discussed. Is the data quality and quantity sufficient to achieve the visualisation goals? Is it necessary to acquire additional or different data? Are there any limitations that need to be considered in the design and implementation of the visualisation product? Are there any specific data characteristics that can be used to enhance the visualisation design? For example, if there are a lot of missing values in a dataset, this might need to be taken into account in the design of the visualisation product, e.g. by using specific visual encodings to indicate missing values or by providing options for filtering or imputing missing values. 
-
-Tip: `Ydata-profiling` is a Python library that can be used to perform exploratory data analysis and generate a comprehensive report on the characteristics of the data, including the distribution of values, missing values, correlations between variables, and more. This can be a useful tool to generate the full analysis in the code section and then only include the relevant information here in the data report.
-
-This is an example on how to incorporate executable Python code and show a figure output:
-
-```{python}
-#| label: fig-demo
-#| fig-cap: "Distribution of monthly revenue across product categories (sample data)."
-#| echo: true
-#| code-fold: true
-import matplotlib.pyplot as plt
-
-# Sample data
-categories = ['Electronics', 'Clothing', 'Food', 'Books', 'Sports']
-revenue = [42000, 28500, 35200, 12800, 19400]
-
-# Create the bar chart
-fig, ax = plt.subplots(figsize=(6, 3.75))
-
-bars = ax.bar(categories, revenue, color='#4C78A8', edgecolor='white')
-
-ax.set_xlabel('Product Category')
-ax.set_title('Monthly Revenue by Product Category')
-
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
-ax.spines['left'].set_visible(False)
-ax.yaxis.set_visible(False)
-ax.tick_params(axis='x', length=0)
-
-# Add value labels on bars
-for bar, val in zip(bars, revenue):
-    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 500,
-            f'{val:,.0f}', ha='center', va='bottom', fontsize=9)
-
-plt.tight_layout()
-plt.show()
 ```
 
-Then the figure can be referenced with @fig-demo.
+
+
+
+
+### EDA Summary
+We need only a few of the available variables. Of the relevant variables there are not many that have missing values. For those who have missing values, it is not really an issue for the goal of this project. We just need to make sure to declare missing data in the dashboard. One challenge is, that the COW-datasets use their own countrycodes and the milex dataset has the full country names. We will need to map all of them to standardized codes. 
+The Conflict dataset contains a row for each conflict and year. Not just one per conflict. In addition to that this set of rows exists once with Country 1 in the Column State_A and Country 2 in the Column State_B. Then there is the same data with the two countries in switched positions. We have to keep this in mind while creating filters and doing transformations on the data.
+Furthermore, in some of the datasets there exists data from countries that do not exist today. For simplicity and so that we are able to project the data on a map, we only keep the data for countries that can be mapped to countries that exist today.
+
 
 ## Processed Data
 ### Overview Processed Datasets
 
 : Overview of processed datasets used in the project. {#tbl-processed-overview}
 
-| Name | Quelle | Storage location |
+| Name | Storage location |
 |----------------|-----------------------------------------|--------------------------------------------------------------------------|
-| Processed Dataset 1      | Name/short description of the data source | Link and/or short description of the location where the data is stored, e.g. accessible to the team |
-| Processed Dataset 2      | …                                       | …                                                                        |
+| Conflicts | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/clean/conflicts.parquet) |
+| Alliances | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/clean/alliances.parquet) |
+| Trade | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/clean/trade.parquet) |
+| Military Expenditure | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/clean/milex.parquet) | 
+
+All of the data pre-processing is done by the code in the jupyter notebook ``./src/import_and_cleaning.ipynb``. By executing the script, the raw data is loaded, cleaned and then written to ``./data/clean`` as parquet files. The parquet files are then being loaded by streamlit.
+An easy way to read parquet files is to use the ``.read_parquet()`` method from pandas.
+
 
 ### Details Processed Dataset 1
 
-- Description of what information the dataset contains
-- Details and reasons for the processing steps -> Traceability and ensuring reproducibility
-- How can the data be accessed? Description, scripts, tools, ...
-- ...
-
 #### Data Catalogue
+: Data catalogue for Dataset 1. {#tbl-data-catalogue}
 
+| Column index | Column name | Datatype | Values (Range, validation rules) | Short description |
+|---:|---|---|---|---|
+| 1 | `Unnamed: 0` | Integer | 0–10,357; no missing values | Original row index from the source dataset. |
+| 2 | `Conflict_ID` | Integer | 2–4,726; no missing values | Unique identifier for each conflict or militarized interstate dispute. |
+| 3 | `Statecode_A` | Text | 171 unique state codes; no missing values | Three-letter country/state code for state A in the dyad. |
+| 4 | `Statecode_B` | Text | 171 unique state codes; no missing values | Three-letter country/state code for state B in the dyad. |
+| 5 | `Year` | Integer | 1816–2014; no missing values | Year of the dyadic conflict observation. |
+| 6 | `Start_Year` | Integer | 1816–2014; no missing values | Year in which the conflict began. |
+| 7 | `End_Year` | Integer | 1816–2014; no missing values | Year in which the conflict ended. |
+| 8 | `Outcome` | Text | 9 categories; no missing values | Recorded outcome of the conflict, such as compromise, stalemate, victory, yield, unclear outcome, or ongoing dispute. |
+| 9 | `Fatality_Level` | Integer | -9 = missing information; otherwise 0–6 coded category | Coded fatality level of the conflict. |
+| 10 | `Hostility` | Text | 4 categories; no missing values | Highest hostility level in the conflict, such as threat to use force, display of force, use of force, or interstate war. |
+| 11 | `Role_A` | Text | 4 categories; no missing values | Role of state A in the conflict, such as primary initiator, primary target, or joiner on one side. |
+| 12 | `Role_B` | Text | 4 categories; no missing values | Role of state B in the conflict, such as primary initiator, primary target, or joiner on one side. |
+| 13 | `Severity` | Integer | 1–100; no missing values | Overall severity score assigned to the conflict. |
+| 14 | `Severity_A` | Integer | 0–100; no missing values | Severity score attributed to state A. |
+| 15 | `Severity_B` | Integer | 0–100; no missing values | Severity score attributed to state B. |
 
-#### If applicable: Entity Relationship Diagram
-
-
-#### Data Chracteristics and Quality
 
 
 ### Details Processed Dataset 2
-...
+
+#### Data Catalogue
+: Data catalogue for Dataset 2. {#tbl-data-catalogue}
+
+| Column index | Column name | Datatype | Values (Range, validation rules) | Short description |
+|---:|---|---|---|---|
+| 1 | `Unnamed: 0` | Integer | 0–148,257; no missing values | Original row index from the source dataset. |
+| 2 | `Statecode_A` | Text | 159 unique state codes; no missing values | Three-letter country/state code for state A in the dyad. |
+| 3 | `State_A` | Text | 163 unique state names; no missing values | Country/state name for state A in the dyadic alliance relationship. |
+| 4 | `Statecode_B` | Text | 159 unique state codes; no missing values | Three-letter country/state code for state B in the dyad. |
+| 5 | `State_B` | Text | 163 unique state names; no missing values | Country/state name for state B in the dyadic alliance relationship. |
+| 6 | `Start_Year` | Integer | 1816–2012; no missing values | Year in which the alliance relationship began. |
+| 7 | `End_Year` | Float | 1820.0–2012.0; no missing values | Year in which the alliance relationship ended. |
+| 8 | `Defense` | Integer | 0–1; binary indicator; no missing values | Indicates whether the alliance includes a defense commitment. |
+| 9 | `Neutrality` | Integer | 0–1; binary indicator; no missing values | Indicates whether the alliance includes a neutrality commitment. |
+| 10 | `Nonaggression` | Float | 0.0–1.0; binary indicator; no missing values | Indicates whether the alliance includes a non-aggression commitment. |
+| 11 | `Entente` | Float | 0.0–1.0; binary indicator; no missing values | Indicates whether the alliance includes an entente commitment. |
+| 12 | `Year` | Integer | 1816–2012; no missing values | Year of the dyad-year alliance observation. |
+  
+
+### Details Processed Dataset 3
+
+#### Data Catalogue
+| Column index | Column name | Datatype | Values (Range, validation rules) | Short description |
+|---:|---|---|---|---|
+| 1 | `Unnamed: 0` | Integer | 0–886,827; no missing values | Original row index from the source dataset. |
+| 2 | `Statecode_A` | Text | 191 unique state codes; no missing values | Three-letter country/state code for state A in the dyadic trade relationship. |
+| 3 | `Statecode_B` | Text | 191 unique state codes; no missing values | Three-letter country/state code for state B in the dyadic trade relationship. |
+| 4 | `Year` | Integer | 1870–2014; no missing values | Year of the dyadic trade observation. |
+| 5 | `State_A` | Text | 196 unique state names; no missing values | Country/state name for state A in the trade dyad. |
+| 6 | `State_B` | Text | 196 unique state names; no missing values | Country/state name for state B in the trade dyad. |
+| 7 | `Flow_1` | Float | 0.0–472,525.22; 224,151 missing values | Trade flow from state A to state B. |
+| 8 | `Flow_2` | Float | 0.0–276,158.28; 229,166 missing values | Trade flow from state B to state A. |
+
+
+
+### Details Processed Dataset 4
+
+#### Data Catalogue
+
+| Column index | Column name | Datatype | Values (Range, validation rules) | Short description |
+|---:|---|---|---|---|
+| 1 | `Unnamed: 0` | Integer | 0–6,400; no missing values | Original row index from the source dataset. |
+| 2 | `Country` | Text | 173 unique country names; no missing values | Country or territory for which military expenditure per capita is reported. |
+| 3 | `Year` | Integer | 1988–2024; no missing values | Year of the military expenditure observation. |
+| 4 | `Expenditure` | Float | 0.1–11,643.6; 1,077 missing values | Military expenditure per capita for the given country and year. |
+| 5 | `Statecode` | Text | 172 unique state codes; no missing values | Three-letter country/state code identifying the country or territory. |
