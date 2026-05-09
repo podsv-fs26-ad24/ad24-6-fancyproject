@@ -16,6 +16,12 @@ alliances = pd.read_parquet("./data/clean/alliances.parquet")
 milex = pd.read_parquet("./data/clean/milex.parquet")
 
 
+### Global Variables
+vis_annot_size = 20
+
+
+
+
 # Data Processing
 #########################################################
 
@@ -64,7 +70,7 @@ def get_country_alliances(country_code: str, year: int, data: pd.DataFrame) -> p
         axis=1
     )
 
-    # Build a readable alliance type string from the binary flag columns
+    # Build a readable alliance-type string from the binary flag columns
     type_flags = {
         "Defense":      "Defense Pact",
         "Neutrality":   "Neutrality Pact",
@@ -88,8 +94,17 @@ def get_country_alliances(country_code: str, year: int, data: pd.DataFrame) -> p
                })
 
 
+def get_global_conflict_count(data: pd.DataFrame):
+    """return df with conflict count by year"""
+    unique_conflicts = data.drop_duplicates(subset=["Conflict_ID", "Year"])
+    yearly_conflicts = unique_conflicts.groupby("Year").size().reset_index(name="ccount")
+    return yearly_conflicts
+
+
+
 # use helper function to create new df with conflict counts
 df_conflict_counts = get_conflicts_counts(conflicts)
+#create new column with log-conflict count for display on map
 df_conflict_counts["Log_Conflicts"] = np.log1p(df_conflict_counts["Total_Conflicts"])
 
 
@@ -112,7 +127,7 @@ with col3:
 
 # Global Map with conflict count for each country
 with st.container(border=True):
-    st.markdown("### Global Conflict Involvement Map")
+    st.markdown("#### Global Conflict Involvement Map")
     st.markdown("This map shows the total number of unique conflicts each country has been involved in.")
     # Generate the Choropleth map using Plotly Express
     fig = px.choropleth(
@@ -126,33 +141,69 @@ with st.container(border=True):
     )
 
     #manually define colorbar ticks
-    legend_ticks = [5, 25, 50, 100, 200, 300]
+    legend_ticks = [1, 10, 100, 300]
     # Calculate where those ticks should physically sit on the log scale
     log_ticks = np.log1p(legend_ticks)
 
-    # 4. Update the layout to override the colorbar and make it full screen
+    # Update the layout to override the colorbar and make it full screen
     fig.update_layout(
         coloraxis_colorbar=dict(
             title="Conflict Count",
+            title_font=dict(color="black"),
             tickvals=log_ticks,       # Position ticks at the log scale values
-            ticktext=legend_ticks     # But display the real numbers as text!
+            ticktext=legend_ticks,     # But display the real numbers as text!
+            tickfont=dict(color="black")
         ),
         geo=dict(showframe=False, showcoastlines=True, projection_type='equirectangular'),
         margin={"r":0,"t":0,"l":0,"b":0},
-        height=750
+        height=750,
+        font=dict(size=vis_annot_size)
     )
     # Render Plotly map to Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
 
+
+    ### Display global conflicts per year
+    st.markdown("#### Global Ongoing Conflicts Over Time")
+    global_yearly_conflicts = get_global_conflict_count(conflicts)
+    fig_glob_conflicts = px.line(
+                    global_yearly_conflicts,
+                    x="Year",
+                    y="ccount",
+                    labels={"Year":"Year", "ccount": "Number of Conflicts"},
+                    color_discrete_sequence=["#225ea8"]
+                )
+    
+    fig_glob_conflicts.update_layout(
+        height=550,
+        font=dict(size=vis_annot_size),
+        xaxis=dict(
+                title_font=dict(color="black"),   
+                tickfont=dict(color="black")
+                ),
+            yaxis=dict(
+                title_font=dict(color="black"),   
+                tickfont=dict(color="black")
+            ),
+            legend_font=dict(color="black"),        
+            legend_title_font=dict(color="black")
+    )
+
+    
+    st.plotly_chart(fig_glob_conflicts, use_container_width=True)
+
+
+# Conflict Browser Section
+###########################################################
 with st.container(border=True):
     st.markdown("### Conflict Browser")
     st.markdown("Use the Filters to search for specific conflicts in the conflict dataset.")
-    # Table to filter and search specific conflicts
+    #  filters to search specific conflicts
     selected_countries = st.multiselect(
         "Filter involved Countries",
         options=conflicts["Statecode_A"].unique(),
-        default="CHE"
+        default="USA"
     )
 
     min_year, max_year = st.slider(
@@ -162,17 +213,16 @@ with st.container(border=True):
         value=(int(conflicts["Year"].min()), int(conflicts["Year"].max()))
     )
 
-    min_sev, max_sev = st.slider(
-        "Severity",
-        min_value=int(conflicts["Severity"].min()),
-        max_value=int(conflicts["Severity"].max()),
-        value=(int(conflicts["Severity"].min()), int(conflicts["Severity"].max()))
+    selected_hostilities = st.multiselect(
+        "Filter Hostility",
+        options=conflicts["Hostility"].unique(),
+        default="Use of Force"
     )
 
     filtered_df = conflicts[
         conflicts["Statecode_A"].isin(selected_countries) &
         conflicts["Year"].between(min_year, max_year) &
-        conflicts["Severity"].between(min_sev, max_sev)
+        conflicts["Hostility"].isin(selected_hostilities)
     ]
     
     # Display Dataframe
@@ -254,7 +304,7 @@ with st.container(border=True):
     # Create a small DataFrame for the two involved countries
     df_selected_map = pd.DataFrame({
         "Statecode": [row['Statecode_A'], row['Statecode_B']],
-        "Side": ["Side A", "Side B"]
+        "Side": ["State A", "State B"]
     })
 
     # Generate a Choropleth map highlighting just these two countries
@@ -262,7 +312,7 @@ with st.container(border=True):
         df_selected_map,
         locations="Statecode",
         color="Side",
-        color_discrete_map={"Side A": "#225ea8", "Side B": "#7fcdbb"}, # Red and Blue
+        color_discrete_map={"State A": "#225ea8", "State B": "#7fcdbb"}, # Red and Blue
         hover_name="Statecode"
     )
 
@@ -276,13 +326,17 @@ with st.container(border=True):
         ),
         margin={"r":0,"t":0,"l":0,"b":0},
         height=400,
-        legend_title_text="Involved Parties"
+        font=dict(size=vis_annot_size),
+        legend_title_text="Involved Parties",
+        legend_font=dict(color="black"),        
+        legend_title_font=dict(color="black")
     )
 
     # Display the map
     st.plotly_chart(fig_conflict_map, use_container_width=True)
 
 
+    ### Overview of the selected Conflict with detailed information for State A and State B
     with st.container(border=True):
         st.subheader(f"Stats for Conflict {row['Conflict_ID']}")
         col4, col5 = st.columns(2)
@@ -299,7 +353,7 @@ with st.container(border=True):
 
     with col6:
         with st.container(border=True):
-            st.subheader("Side A")
+            st.subheader("State A")
             st.write(f"**State:** {row['Statecode_A']}")
             st.write(f"**Role:** {row['Role_A']}")
             st.write(f"**Conflict Severity:** {row['Severity_A']}")
@@ -319,7 +373,7 @@ with st.container(border=True):
 
     with col7:
         with st.container(border=True):
-            st.subheader("Side B")
+            st.subheader("State B")
             st.write(f"**State:** {row['Statecode_B']}")
             st.write(f"**Role:** {row['Role_B']}")
             st.write(f"**Conflict Severity:** {row['Severity_B']}")
@@ -337,7 +391,7 @@ with st.container(border=True):
                     hide_index=True,
                 )
     
-        # Conflicts per year chart — ± 5 years around the conflict start
+        # Conflicts per year chart  +-5 years around the conflict start
     with st.container(border=True):
         st.markdown(f"#### Conflict Involvements Around Conflict {row["Conflict_ID"]}")
 
@@ -373,6 +427,7 @@ with st.container(border=True):
             .reset_index(name="Conflict_Count")
         )
 
+        # create grouped barchart
         fig_activity = px.bar(
             conflicts_per_year,
             x="Start_Year",
@@ -380,7 +435,7 @@ with st.container(border=True):
             color="Country",
             barmode="group",
             labels={"Start_Year": "Year", "Conflict_Count": "Number of Conflicts", "Country": "Country"},
-            color_discrete_sequence=["#225ea8", "#7fcdbb"]  # matches your Side A / Side B map colors
+            color_discrete_sequence=["#225ea8", "#7fcdbb"] 
         )
 
         # Highlight the conflict duration with a red line if duration <=1 year
@@ -390,9 +445,9 @@ with st.container(border=True):
                 line_color="red",
                 line_width=2,
                 line_dash="dash",
-                annotation_text=f"Conflict {row["Conflict_ID"]}",
+                annotation_text=f"Conflict Period",
                 annotation_position="top",
-                annotation=dict(font_size=12, font_color="red")
+                annotation=dict(font_size=14, font_color="red")
             )
             # Highlight the conflict duration with a red block if duration >1 year
         else:
@@ -403,15 +458,26 @@ with st.container(border=True):
                 opacity=0.15,
                 layer="below",
                 line_width=0,
-                annotation_text=f"Conflict {row["Conflict_ID"]}",
+                annotation_text=f"Conflict Period",
                 annotation_position="top left",
-                annotation=dict(font_size=12, font_color="red")
+                annotation=dict(font_size=14, font_color="red")
             )
 
         fig_activity.update_layout(
             height=350,
-            font=dict(size=13),
-            xaxis=dict(tickmode="linear", dtick=1)
+            font=dict(size=vis_annot_size),
+            xaxis=dict(
+                tickmode="linear", 
+                dtick=1,
+                title_font=dict(color="black"),   
+                tickfont=dict(color="black")
+                ),
+            yaxis=dict(
+                title_font=dict(color="black"),   
+                tickfont=dict(color="black")
+            ),
+            legend_font=dict(color="black"),        
+            legend_title_font=dict(color="black")
         )
 
         st.plotly_chart(fig_activity, use_container_width=True)
@@ -452,9 +518,9 @@ with st.container(border=True):
                         line_color="red",
                         line_width=2,
                         line_dash="dash",
-                        annotation_text=f"Conflict {row['Conflict_ID']}",
+                        annotation_text=f"Conflict",
                         annotation_position="top",
-                        annotation=dict(font_size=12, font_color="red")
+                        annotation=dict(font_size=14, font_color="red")
                     )
                 else:
                     fig_milex.add_vrect(
@@ -464,15 +530,26 @@ with st.container(border=True):
                         opacity=0.15,
                         layer="below",
                         line_width=0,
-                        annotation_text=f"Conflict {row['Conflict_ID']}",
+                        annotation_text=f"Conflict Period",
                         annotation_position="top left",
-                        annotation=dict(font_size=12, font_color="red")
+                        annotation=dict(font_size=14, font_color="red")
                     )
 
                 fig_milex.update_layout(
                     height=350,
-                    font=dict(size=13),
-                    xaxis=dict(tickmode="linear", dtick=1)
+                    font=dict(size=vis_annot_size),
+                    xaxis=dict(
+                        tickmode="linear", 
+                        dtick=1,
+                        title_font=dict(color="black"),   
+                        tickfont=dict(color="black")
+                    ),
+                    yaxis=dict(
+                        title_font=dict(color="black"),   
+                        tickfont=dict(color="black")
+                    ),
+                    legend_font=dict(color="black"),        
+                    legend_title_font=dict(color="black")
                 )
 
                 st.plotly_chart(fig_milex, use_container_width=True)
@@ -542,14 +619,23 @@ with st.container(border=True):
                     name=f"{state_a} → {state_b}"
                 ))
 
-            fig_line.update_layout(
-                yaxis_title="Trade flow [Mio USD]",
-                legend_title="Trade Direction",
-            )
-
         fig_line.update_layout(
             height=450,
-            font=dict(size=14)
+            font=dict(size=vis_annot_size),
+            yaxis_title="Trade flow [Mio USD]",
+            legend_title="Trade Direction",
+            xaxis=dict(
+                        tickmode="linear", 
+                        dtick=1,
+                        title_font=dict(color="black"),   
+                        tickfont=dict(color="black")
+                    ),
+                    yaxis=dict(
+                        title_font=dict(color="black"),   
+                        tickfont=dict(color="black")
+                    ),
+                    legend_font=dict(color="black"),        
+                    legend_title_font=dict(color="black")
         )
 
         # Highlight conflict duration: vline if < 1 year, red band if > 1
@@ -561,7 +647,7 @@ with st.container(border=True):
                 line_dash="dash",
                 annotation_text="Conflict",
                 annotation_position="top",
-                annotation=dict(font_size=12, font_color="red")
+                annotation=dict(font_size=14, font_color="red")
             )
         else:
             fig_line.add_vrect(
@@ -573,9 +659,9 @@ with st.container(border=True):
                 line_width=0,
                 annotation_text="Conflict Period",
                 annotation_position="top left",
-                annotation=dict(font_size=12, font_color="red")
+                annotation=dict(font_size=14, font_color="red")
             )
-
+        st.markdown(f"#### Trade Around Conflict {row["Conflict_ID"]}")
         st.plotly_chart(fig_line, use_container_width=True)
 
 
@@ -658,7 +744,7 @@ with st.container(border=True):
                 )])
 
                 fig.update_layout(
-                    font_size=15,
+                    font_size=vis_annot_size,
                     height=600 # Slightly taller to accommodate more nodes
                 )
                 st.markdown(f"#### Multilateral Trade Network ({selected_year})")
@@ -673,19 +759,8 @@ with st.container(border=True):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-### Footer
+# Footer
+############################################## 
 
 footer="""<style>
 a:link , a:visited{
@@ -715,3 +790,6 @@ text-align: center;
 </div>
 """
 st.markdown(footer,unsafe_allow_html=True)
+
+
+# parts of this code were written with the help of or written by OpenAI ChatGPT 5.5 and Anthropic Claude Sonnet 4.6
