@@ -212,13 +212,13 @@ with st.container(border=True):
     st.markdown("Use the Filters to search for specific conflicts in the conflict dataset.")
 
     # --- Filter Widgets ---
-    selected_countries = st.multiselect(
+    selected_countries_A = st.multiselect(
         "Filter State A",
         options=conflicts["Statecode_A"].unique(),
         default="USA"
     )
 
-    selected_countries = st.multiselect(
+    selected_countries_B = st.multiselect(
         "Filter State B",
         options=conflicts["Statecode_B"].unique(),
         default="CHN"
@@ -239,8 +239,8 @@ with st.container(border=True):
 
     # Apply all three filters simultaneously
     filtered_df = conflicts[
-        conflicts["Statecode_A"].isin(selected_countries) &
-        conflicts["Statecode_B"].isin(selected_countries) &
+        conflicts["Statecode_A"].isin(selected_countries_A) &
+        conflicts["Statecode_B"].isin(selected_countries_B) &
         conflicts["Year"].between(min_year, max_year) &
         conflicts["Hostility"].isin(selected_hostilities)
     ]
