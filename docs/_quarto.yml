@@ -28,6 +28,7 @@ format:
     sass-cache: false
     css: styles.css
     toc: true
+    page-layout: full
       
 
 number-sections: true
