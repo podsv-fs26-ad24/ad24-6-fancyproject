@@ -17,7 +17,7 @@ milex = pd.read_parquet("./data/clean/milex.parquet")
 
 
 ### Global Variables
-vis_annot_size = 20
+vis_annot_size = 18
 
 
 
@@ -149,15 +149,14 @@ with st.container(border=True):
     fig.update_layout(
         coloraxis_colorbar=dict(
             title="Conflict Count",
-            title_font=dict(color="black"),
+            title_font=dict(color="black", size=vis_annot_size),
             tickvals=log_ticks,       # Position ticks at the log scale values
             ticktext=legend_ticks,     # But display the real numbers as text!
             tickfont=dict(color="black")
         ),
         geo=dict(showframe=False, showcoastlines=True, projection_type='equirectangular'),
         margin={"r":0,"t":0,"l":0,"b":0},
-        height=750,
-        font=dict(size=vis_annot_size)
+        height=750
     )
     # Render Plotly map to Streamlit
     st.plotly_chart(fig, use_container_width=True)
@@ -179,12 +178,12 @@ with st.container(border=True):
         height=550,
         font=dict(size=vis_annot_size),
         xaxis=dict(
-                title_font=dict(color="black"),   
-                tickfont=dict(color="black")
+                title_font=dict(color="black", size=vis_annot_size),   
+                tickfont=dict(color="black", size=vis_annot_size)
                 ),
             yaxis=dict(
-                title_font=dict(color="black"),   
-                tickfont=dict(color="black")
+                title_font=dict(color="black", size=vis_annot_size),   
+                tickfont=dict(color="black", size=vis_annot_size)
             ),
             legend_font=dict(color="black"),        
             legend_title_font=dict(color="black")
@@ -312,7 +311,7 @@ with st.container(border=True):
         df_selected_map,
         locations="Statecode",
         color="Side",
-        color_discrete_map={"State A": "#225ea8", "State B": "#7fcdbb"}, # Red and Blue
+        color_discrete_map={"State A": "#225ea8", "State B": "#7fcdbb"}, 
         hover_name="Statecode"
     )
 
@@ -322,14 +321,14 @@ with st.container(border=True):
             showcoastlines=True, 
             projection_type='equirectangular',
             showland=True,
-            landcolor="lightgray" # Paints non-involved countries gray for contrast
+            landcolor="lightgray" # Paints non-involved countries gray for better contrast
         ),
         margin={"r":0,"t":0,"l":0,"b":0},
         height=400,
         font=dict(size=vis_annot_size),
         legend_title_text="Involved Parties",
-        legend_font=dict(color="black"),        
-        legend_title_font=dict(color="black")
+        legend_font=dict(color="black", size=vis_annot_size),        
+        legend_title_font=dict(color="black", size=vis_annot_size)
     )
 
     # Display the map
@@ -469,15 +468,15 @@ with st.container(border=True):
             xaxis=dict(
                 tickmode="linear", 
                 dtick=1,
-                title_font=dict(color="black"),   
-                tickfont=dict(color="black")
+                title_font=dict(color="black", size=vis_annot_size),   
+                tickfont=dict(color="black", size=vis_annot_size)
                 ),
             yaxis=dict(
-                title_font=dict(color="black"),   
-                tickfont=dict(color="black")
+                title_font=dict(color="black", size=vis_annot_size),   
+                tickfont=dict(color="black", size=vis_annot_size)
             ),
-            legend_font=dict(color="black"),        
-            legend_title_font=dict(color="black")
+            legend_font=dict(color="black", size=vis_annot_size),        
+            legend_title_font=dict(color="black", size=vis_annot_size)
         )
 
         st.plotly_chart(fig_activity, use_container_width=True)
@@ -541,12 +540,12 @@ with st.container(border=True):
                     xaxis=dict(
                         tickmode="linear", 
                         dtick=1,
-                        title_font=dict(color="black"),   
-                        tickfont=dict(color="black")
+                        title_font=dict(color="black", size=vis_annot_size),   
+                        tickfont=dict(color="black", size=vis_annot_size)
                     ),
                     yaxis=dict(
-                        title_font=dict(color="black"),   
-                        tickfont=dict(color="black")
+                        title_font=dict(color="black", size=vis_annot_size),   
+                        tickfont=dict(color="black", size=vis_annot_size)
                     ),
                     legend_font=dict(color="black"),        
                     legend_title_font=dict(color="black")
@@ -627,15 +626,15 @@ with st.container(border=True):
             xaxis=dict(
                         tickmode="linear", 
                         dtick=1,
-                        title_font=dict(color="black"),   
-                        tickfont=dict(color="black")
+                        title_font=dict(color="black", size=vis_annot_size),   
+                        tickfont=dict(color="black", size=vis_annot_size)
                     ),
                     yaxis=dict(
-                        title_font=dict(color="black"),   
-                        tickfont=dict(color="black")
+                        title_font=dict(color="black", size=vis_annot_size),   
+                        tickfont=dict(color="black", size=vis_annot_size)
                     ),
-                    legend_font=dict(color="black"),        
-                    legend_title_font=dict(color="black")
+                    legend_font=dict(color="black", size=vis_annot_size),        
+                    legend_title_font=dict(color="black", size=vis_annot_size)
         )
 
         # Highlight conflict duration: vline if < 1 year, red band if > 1
@@ -670,7 +669,7 @@ with st.container(border=True):
         # Only render the chart if at least two countries are selected
         if len(selected_countries_trade) >= 2:
             
-            # 2. Filter the dataset for ALL selected countries (both sides of the trade)
+            # Filter the dataset for ALL selected countries (both sides of the trade)
             filtered_trade = trade[
                 (trade["Statecode_A"].isin(selected_countries_trade)) & 
                 (trade["Statecode_B"].isin(selected_countries_trade)) & 
@@ -678,12 +677,12 @@ with st.container(border=True):
             ].copy()
 
             if not filtered_trade.empty:
-                # 3. Dynamically build Nodes (Origins on the left, Destinations on the right)
+                # Dynamically build Nodes (Origins on the left, Destinations on the right)
                 countries = list(selected_countries_trade)
                 num_countries = len(countries)
                 
                 # Create labels: e.g., ["USA (Origin)", "CAN (Origin)", ..., "USA (Dest)", "CAN (Dest)"]
-                labels = [f"{c} (Origin)" for c in countries] + [f"{c} (Destination)" for c in countries]
+                labels = [f"{c}" for c in countries] + [f"{c}" for c in countries]
                 
                 # Create a dictionary to easily look up the index for any country
                 # Origins are indices 0 to N-1. Destinations are indices N to 2N-1.
@@ -696,7 +695,7 @@ with st.container(border=True):
                 node_colors = [base_colors[i % len(base_colors)] for i in range(num_countries)]
                 node_colors = node_colors + node_colors # Match Origin colors to Destination colors
 
-                # 4. Dynamically build Links
+                # Dynamically build Links
                 sources = []
                 targets = []
                 values = []
@@ -725,9 +724,10 @@ with st.container(border=True):
                         values.append(flow_2)
                         link_labels.append(f"{state_a} to {state_b}")
 
-                # 5. Build the Figure
+                # Build the Figure
                 fig = go.Figure(data=[go.Sankey(
                     valuesuffix = " Mio USD",
+                    textfont=dict(color="black"),
                     node = dict(
                         pad = 20,
                         thickness = 20,
@@ -745,7 +745,7 @@ with st.container(border=True):
 
                 fig.update_layout(
                     font_size=vis_annot_size,
-                    height=600 # Slightly taller to accommodate more nodes
+                    height=600 
                 )
                 st.markdown(f"#### Multilateral Trade Network ({selected_year})")
                 st.plotly_chart(fig, use_container_width=True, theme=None)
