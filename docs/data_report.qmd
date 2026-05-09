@@ -288,7 +288,7 @@ Furthermore, in some of the datasets there exists data from countries that do no
 | Trade | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/clean/trade.parquet) |
 | Military Expenditure | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/clean/milex.parquet) | 
 
-All of the data pre-processing is done by the code in the jupyter notebook ``./src/import_and_cleaning.ipynb``. By executing the script, the raw data is loaded, cleaned and then written to ``./data/clean`` as parquet files. The parquet files are then being loaded by streamlit.
+All of the data pre-processing is done by the code in the script ``./src/import_and_cleaning.py``. By executing the script, the raw data is loaded, cleaned and then written to ``./data/clean`` as parquet files. The parquet files are then being loaded by streamlit.
 An easy way to read parquet files is to use the ``.read_parquet()`` method from pandas.
 
 
