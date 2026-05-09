@@ -271,7 +271,7 @@ The Excel workbook contains SIPRI military expenditure data organized across mul
 
 
 ### EDA Summary
-We need only a few of the available variables. Of the relevant variables there are not many that have missing values. For those who have missing values, it is not really an issue for the goal of this project. We just need to make sure to declare missing data in the dashboard. One challenge is, that the COW-datasets use their own countrycodes and the milex dataset has the full country names. We will need to map all of them to standardized codes. 
+We need only a few of the available variables. Of the relevant variables there are not many that have missing values. Only the trade and milex datasets have a substantial amount of missing data. For those cases, it is not really an issue for the goal of this project. We just need to make sure to declare missing data in the dashboard. One challenge is, that the COW-datasets use their own countrycodes and the milex dataset has the full country names. We will need to map all of them to standardized codes. 
 The Conflict dataset contains a row for each conflict and year. Not just one per conflict. In addition to that this set of rows exists once with Country 1 in the Column State_A and Country 2 in the Column State_B. Then there is the same data with the two countries in switched positions. We have to keep this in mind while creating filters and doing transformations on the data.
 Furthermore, in some of the datasets there exists data from countries that do not exist today. For simplicity and so that we are able to project the data on a map, we only keep the data for countries that can be mapped to countries that exist today.
 
