@@ -8,10 +8,12 @@ Typically, in the exploratory analysis of the acquired raw data, quality and oth
 
 : Overview of raw datasets used in the project. {#tbl-raw-overview}
 
-| Name | Quelle | Storage location |
+| Name | Source | Storage location |
 |----------------|-----------------------------------------|--------------------------------------------------------------------------|
-| Dataset 1      | Name/short description of the data source | Link and/or short description of the location where the data is stored, e.g. accessible to the team |
-| Dataset 2      | …                                       | …                                                                        |
+| Military Interstate Disputes | Name/short description of the data source | Link and/or short description of the location where the data is stored, e.g. accessible to the team |
+| Alliances  | Link[https://correlatesofwar.org/data-sets/formal-alliances/] | Link[https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/alliance_v4.1_by_directed_yearly.csv] |
+| Trade | | |
+| Military Expenditure |  |  |       
 
 ### Details Dataset 1
 
