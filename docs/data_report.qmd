@@ -1,3 +1,10 @@
+---
+title: "Data Report"
+format:
+  html:
+    page-layout: full
+---
+
 # Data Report
 All information on the data used in the project is compiled in the data report in order to ensure the traceability and reproducibility of the results and to enable a systematic expansion of the database. test
 
