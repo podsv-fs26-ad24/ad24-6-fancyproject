@@ -30,7 +30,7 @@ jobs:
           tinytex: true
 
       - name: Install Jupyter dependencies
-        run: python3 -m pip install jupyter nbformat nbclient ipykernel matplotlib
+        run: python3 -m pip install jupyter nbformat nbclient ipykernel matplotlib ydata_profiling
 
       - name: Render Quarto project  
         uses: quarto-dev/quarto-actions/render@v2

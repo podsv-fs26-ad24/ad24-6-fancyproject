@@ -1,75 +1,39 @@
-import pandas as pd
 from ydata_profiling import ProfileReport
-import argparse
-import os
-import sys
+import pandas as pd
 
-def main():
-    """Load CSV from URL and generate data profiling report"""
-    
-    # Set up command line argument parsing
-    parser = argparse.ArgumentParser(
-        description="Generate data profiling report from CSV URL",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  python script.py https://example.com/data.csv
-  python script.py https://example.com/data.csv --output /path/to/report.html
-  python script.py https://example.com/data.csv -o my_report.html
-  python script.py https://example.com/data.csv --delimiter ";"
-  python script.py https://example.com/data.csv -d "\\t" -o report.html
-        """
-    )
-    
-    parser.add_argument(
-        'url',
-        help='URL of the CSV file to profile'
-    )
-    
-    parser.add_argument(
-        '-o', '--output',
-        default='data_profile_report.html',
-        help='Output path for the HTML report (default: data_profile_report.html)'
-    )
-    
-    parser.add_argument(
-        '-d', '--delimiter',
-        default=',',
-        help='Cell delimiter for CSV file (default: comma ",")'
-    )
-    
-    # Parse arguments
-    args = parser.parse_args()
-    
-    # Validate output directory exists
-    output_dir = os.path.dirname(args.output)
-    if output_dir and not os.path.exists(output_dir):
-        print(f"❌ Error: Output directory '{output_dir}' does not exist")
-        sys.exit(1)
-    
-    print(f"📥 Loading CSV from: {args.url}")
-    print(f"🔧 Using delimiter: '{args.delimiter}'")
-    try:
-        # Load CSV directly into DataFrame with specified delimiter
-        df = pd.read_csv(args.url, sep=args.delimiter)
-        print(f"✅ CSV loaded successfully: {len(df)} rows × {len(df.columns)} columns")
-    except Exception as e:
-        print(f"❌ Error loading CSV: {e}")
-        sys.exit(1)
-    
-    print("📊 Generating data profiling report...")
-    try:
-        # Create profiling report
-        profile = ProfileReport(df, title="Data Profiling Report")
-        
-        # Save to HTML
-        profile.to_file(args.output)
-        print(f"✅ Data profiling report saved as '{args.output}'")
-        print(f"📖 Open the HTML file in your browser to view the report")
-        
-    except Exception as e:
-        print(f"❌ Error generating report: {e}")
-        sys.exit(1)
+conflicts = pd.read_csv("./data/dyadic_mid_4.03.csv")
+trade = pd.read_csv("./data/Dyadic_COW_4.0.csv")
+alliances = pd.read_csv("./data/alliance_v4.1_by_directed_yearly.csv")
+milex =  pd.read_csv(
+    "./data/SIPRI-Milex-data-1949-2024_2.csv",
+    sep=";",
+    encoding="latin1"
+)
 
-if __name__ == "__main__":
-    main()
+profile_conflicts = ProfileReport(
+    conflicts,
+    title="conflicts_eda",
+    explorative=True
+)
+profile_trade = ProfileReport(
+    trade,
+    title="trade_eda",
+    explorative=True
+)
+profile_alliances = ProfileReport(
+    alliances,
+    title="alliances_eda",
+    explorative=True
+)
+profile_milex = ProfileReport(
+    milex,
+    title="milex_eda",
+    explorative=True
+)
+
+
+
+profile_conflicts.to_file("./eda/conflicts_eda.html")
+profile_trade.to_file("./eda/trade_eda.html")
+profile_alliances.to_file("./eda/alliances_eda.html")
+profile_milex.to_file("./eda/milex_eda.html")

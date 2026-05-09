@@ -122,7 +122,7 @@ gantt
 The product will rely heavily on the concept of **"Overview first, zoom and filter, then details-on-demand."**
 
 ### Product Form
-A single-page, multi-view exploratory dashboard built with Streamlit.
+A single-page, exploratory dashboard built with Streamlit.
 
 ### Visual Encodings
 * **Macro-Timeline and/or Key Metrics:** A broad brush-able timeline of global military spending and total active conflicts. 
