@@ -10,20 +10,36 @@ Typically, in the exploratory analysis of the acquired raw data, quality and oth
 
 | Name | Source | Storage location |
 |----------------|-----------------------------------------|--------------------------------------------------------------------------|
-| Military Interstate Disputes | Name/short description of the data source | Link and/or short description of the location where the data is stored, e.g. accessible to the team |
-| Alliances | [Link[(https://correlatesofwar.org/data-sets/formal-alliances/) | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/alliance_v4.1_by_directed_yearly.csv) |
-| Trade | [Link](https://correlatesofwar.org/data-sets/bilateral-trade/) | |
-| Military Expenditure |  |  |       
+| Military Interstate Disputes | [Link](https://correlatesofwar.org/data-sets/mids/) | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/dyadic_mid_4.03.csv) |
+| Alliances | [Link](https://correlatesofwar.org/data-sets/formal-alliances/) | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/alliance_v4.1_by_directed_yearly.csv) |
+| Trade | [Link](https://correlatesofwar.org/data-sets/bilateral-trade/) | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/Dyadic_COW_4.0.csv) |
+| Military Expenditure | [Link](https://www.sipri.org/databases/milex) | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/SIPRI-Milex-data-1949-2024_2.xlsx) |       
+
 
 ### Details Dataset 1
+**Citation:** Glenn Palmer, Vito D’Orazio, Michael Kenwick and Matthew Lane. 2015. The MID4 Data Set, 2002-2010. Conflict Management and Peace Science, 32(2), pp. 222-242.
+**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.
+**Description:** The dataset contains 10,358 observations and 54 variables describing dyadic militarized interstate disputes. It includes identifiers for both states in each dyad, timing variables such as start and end dates, and coded dispute characteristics such as outcome, settlement type, hostility levels, fatality level, revisionist status, and dispute duration.
+Most variables are numeric codes, while country abbreviations and names are stored as text. Missing data is minimal, with nearly all variables complete and only a small number of missing values.
 
-- Description of what information the dataset contains
-- Details of the data source/provider
-- Information on data procurement: description and possibly references to resources (download scripts, tools, online services, ...). Any new team member should be able to acquire the data indepentendently following these instructions.
-- Legal aspects of data use, licences, etc.
-- Data governance aspects: Categorisation of the data based on internal business requirements, e.g. public, business-relevant, personal
-- If applicable: categorisation into dependent (target variable, regressor) and independent (regressor) variables
-- ...
+### Details Dataset 2
+**Citation:** Gibler, Douglas M. 2009. International military alliances, 1648-2008. CQ Press.  
+**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.
+**Description:** The dataset contains 148,258 observations and 19 variables describing yearly dyadic alliance relationships between pairs of states from 1816 to 2012. It includes country identifiers and names for both states in each dyad, alliance start and end dates, censoring indicators, and coded alliance types such as defense, neutrality, nonaggression, and entente.
+Most variables are numeric codes or binary indicators, while the two state-name variables are stored as text. Missing data is concentrated mainly in the dyad end-date variables, which likely reflects alliances that had no recorded end date or were still ongoing within the dataset period.
+
+### Details Dataset 3
+**Citation:** Barbieri, Katherine and Omar M. G. Omar Keshk. 2016. Correlates of War Project Trade Data Set Codebook, Version 4.0. Online: https://correlatesofwar.org.
+**License:** No specific license. Free to use if cited correctly. Users cannot charge for access.
+**Description:** The dataset contains 886,828 observations and 23 variables describing yearly dyadic trade flows between pairs of states. It includes country codes for both states, the year of observation, importer indicators, bilateral trade-flow measures, smoothed trade values, and indicators for trade spikes or dips. Most variables are numeric, including trade-flow values, binary event indicators, source codes, and version information. The dataset appears complete, with no missing values across the variables.
+
+### Details Dataset 4
+**Citation:** Information from the Stockholm International Peace Research Institute (SIPRI) [DOI](https://doi.org/10.55163/CQGC9685)
+**License:** [Terms and Conditions](https://www.sipri.org/about/terms-and-conditions)
+**Description:** The CSV dataset contains 173 country-level observations and 38 variables showing military expenditure per capita from 1988 to 2024. Each row represents a country, while each year column reports the corresponding per-capita military spending value, with missing values indicating unavailable data or years where figures were not reported.
+The Excel workbook contains SIPRI military expenditure data organized across multiple sheets, including regional totals, local-currency spending, constant and current US dollar values, military spending as a share of GDP, per-capita spending, and spending as a share of government expenditure. The data covers long-term country and regional military expenditure trends from 1988 to 2024
+
+
 
 #### Data Catalogue
 The data catalogue basically represents an extended schema of a relational database.
@@ -31,11 +47,62 @@ The data catalogue basically represents an extended schema of a relational datab
 
 : Data catalogue for Dataset 1. {#tbl-data-catalogue}
 
-| Column index | Column name |  Datatype | Values (Range, validation rules) | Short description |
-|---|---|---|---|---|
-| 1 |   |   |   |   |
-| 2 |   |   |   |   |
-|   |   |   |   |   |
+| Column index | Column name | Datatype | Values (Range, validation rules) | Short description |
+|---:|---|---|---|---|
+| 1 | `disno` | Integer | 2–4726; no missing values | Dispute number identifying the militarized interstate dispute. |
+| 2 | `dyindex` | Integer | 2–4726; no missing values | Dyadic dispute index identifying the dispute-dyad observation. |
+| 3 | `statea` | Integer | 2–986; no missing values | Numeric country code for state A. |
+| 4 | `namea` | Text | 195 unique abbreviations; no missing values | Country abbreviation/name for state A. |
+| 5 | `stateb` | Integer | 2–986; no missing values | Numeric country code for state B. |
+| 6 | `nameb` | Text | 195 unique abbreviations; no missing values | Country abbreviation/name for state B. |
+| 7 | `year` | Integer | 1816–2014; no missing values | Year of the dyadic dispute observation. |
+| 8 | `strtday` | Integer | 1–31; no missing values | Day on which the dispute began. |
+| 9 | `strtmnth` | Integer | 1–12; no missing values | Month in which the dispute began. |
+| 10 | `strtyr` | Integer | 1816–2014; no missing values | Year in which the dispute began. |
+| 11 | `endday` | Integer | 1–31; no missing values | Day on which the dispute ended. |
+| 12 | `endmnth` | Integer | 1–12; no missing values | Month in which the dispute ended. |
+| 13 | `endyear` | Integer | 1816–2014; no missing values | Year in which the dispute ended. |
+| 14 | `outcome` | Integer | 0–8; coded category; no missing values | Coded outcome of the dispute. |
+| 15 | `settlmnt` | Integer | 0–4; coded category; no missing values | Coded settlement type of the dispute. |
+| 16 | `fatlev` | Integer | -9–6; coded category; no missing values | Fatality level for the dispute, with negative values indicating special or missing-code categories. |
+| 17 | `highact` | Integer | 2–23; coded category; no missing values | Highest militarized action recorded in the dispute. |
+| 18 | `hihost` | Integer | 2–5; coded category; no missing values | Highest hostility level recorded in the dispute. |
+| 19 | `recip` | Integer | 0–2; coded category; no missing values | Indicator for whether militarized action was reciprocated. |
+| 20 | `noinit` | Integer | 1–33; no missing values | Number or coded count of initiating states. |
+| 21 | `notarg` | Integer | 0–38; no missing values | Number or coded count of target states. |
+| 22 | `sideaa` | Integer | 0–1; binary indicator; no missing values | Indicates whether state A belongs to side A of the dispute. |
+| 23 | `revstata` | Integer | 0, 1, or 6; coded category; no missing values | Revisionist status of state A. |
+| 24 | `revtypea` | Integer | 0–4; coded category; no missing values | Type of revisionist objective for state A. |
+| 25 | `fatleva` | Integer | -9–6; coded category; no missing values | Fatality level attributed to state A. |
+| 26 | `highmcaa` | Integer | 0–23; coded category; no missing values | Highest militarized action by state A. |
+| 27 | `hihosta` | Integer | 1–5; coded category; no missing values | Highest hostility level for state A. |
+| 28 | `orignata` | Integer | 0–1; binary indicator; no missing values | Indicates whether state A was an originator of the dispute. |
+| 29 | `sideab` | Integer | 0, 1, or 1969; coded value; no missing values | Indicates whether state B belongs to side A or related side classification. |
+| 30 | `revstatb` | Integer | 0, 1, or 6; coded category; no missing values | Revisionist status of state B. |
+| 31 | `revtypeb` | Integer | 0–4; coded category; no missing values | Type of revisionist objective for state B. |
+| 32 | `fatlevb` | Integer | -9–6; coded category; no missing values | Fatality level attributed to state B. |
+| 33 | `highmcab` | Integer | 0–23; coded category; no missing values | Highest militarized action by state B. |
+| 34 | `hihostb` | Integer | 1–5; coded category; no missing values | Highest hostility level for state B. |
+| 35 | `orignatb` | Integer | 0–1; binary indicator; no missing values | Indicates whether state B was an originator of the dispute. |
+| 36 | `rolea` | Integer | 1–4; coded category; no missing values | Role of state A in the dispute. |
+| 37 | `roleb` | Integer | 1–4; coded category; no missing values | Role of state B in the dispute. |
+| 38 | `dyad_rolea` | Integer | 1 or 3; coded category; no missing values | Dyadic role classification for state A. |
+| 39 | `dyad_roleb` | Integer | 1 or 3; coded category; no missing values | Dyadic role classification for state B. |
+| 40 | `war` | Integer | 0–1; binary indicator; no missing values | Indicates whether the dispute reached war level. |
+| 41 | `durindx` | Integer | 1–69; no missing values | Duration index for the dispute episode. |
+| 42 | `duration` | Integer | 1–366; no missing values | Duration of the dispute in days for the observation. |
+| 43 | `cumdurat` | Integer | 1–4905; no missing values | Cumulative duration of the dispute in days. |
+| 44 | `mid5hiact` | Integer | 1–21; coded category; no missing values | MID5 version of the highest action variable. |
+| 45 | `mid5hiacta` | Integer | 0–21; coded category; no missing values | MID5 highest action value for state A. |
+| 46 | `mid5hiactb` | Integer | 0–21; coded category; no missing values | MID5 highest action value for state B. |
+| 47 | `severity` | Integer | 1–100; no missing values | Overall dispute severity score. |
+| 48 | `severitya` | Integer | 0–100; no missing values | Severity score attributed to state A. |
+| 49 | `severityb` | Integer | 0–100; no missing values | Severity score attributed to state B. |
+| 50 | `ongo2014` | Float | 0.0–1.0; 3 missing values | Indicates whether the dispute was ongoing in 2014. |
+| 51 | `new` | Integer | 0–1; binary indicator; no missing values | Indicates whether the observation represents a new dispute or new episode. |
+| 52 | `change` | Integer | 0, 1, 2, 3, or 2701; coded value; no missing values | Indicates whether there was a recorded change in the dispute. |
+| 53 | `changetype_1` | Integer | 0–11; coded category; no missing values | First coded type of dispute change. |
+| 54 | `changetype_2` | Integer | 0–2; coded category; no missing values | Second coded type of dispute change. |
 
 
 #### If applicable: Entity Relationship Diagram
