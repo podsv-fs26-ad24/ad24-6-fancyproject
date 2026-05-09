@@ -213,9 +213,15 @@ with st.container(border=True):
 
     # --- Filter Widgets ---
     selected_countries = st.multiselect(
-        "Filter involved Countries",
+        "Filter State A",
         options=conflicts["Statecode_A"].unique(),
         default="USA"
+    )
+
+    selected_countries = st.multiselect(
+        "Filter State B",
+        options=conflicts["Statecode_B"].unique(),
+        default="CHN"
     )
 
     min_year, max_year = st.slider(
@@ -234,6 +240,7 @@ with st.container(border=True):
     # Apply all three filters simultaneously
     filtered_df = conflicts[
         conflicts["Statecode_A"].isin(selected_countries) &
+        conflicts["Statecode_B"].isin(selected_countries) &
         conflicts["Year"].between(min_year, max_year) &
         conflicts["Hostility"].isin(selected_hostilities)
     ]
