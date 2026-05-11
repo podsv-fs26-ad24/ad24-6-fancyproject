@@ -25,7 +25,7 @@ Run `uv sync` after pulling changes to update the local environment.
 
 
 ## Project Directory Organization
-The 
+
 ```
 .
 |+-.github/
