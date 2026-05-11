@@ -1,4 +1,5 @@
 
+# Environment and Project Setup
 ## Python Environment Setup and Management with uv
 Make sure to have uv installed: https://docs.astral.sh/uv/getting-started/installation/
 
@@ -49,6 +50,7 @@ The
 |README.md
 ```
 
+# Run Project 
 ## Run Data cleaning Script
 
 In Windows:
@@ -62,6 +64,10 @@ In Windows:
 streamlit run ./src/Conflict_Overview.py
 ```
 
+The Dashboard will then be available here: [Dashboard](http://localhost:8501/)
 
+
+# Project Documentation
+The Project Documentation is published [here](https://podsv-fs26-ad24.github.io/ad24-6-fancyproject/).
 
 
