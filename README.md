@@ -64,10 +64,17 @@ In Windows:
 streamlit run ./src/Conflict_Overview.py
 ```
 
-The Dashboard will then be available here: [Dashboard](http://localhost:8501/)
+The dashboard will then be available here: [Dashboard](http://localhost:8501/)
+
+
+## Public Deployment of Dashboard
+The dashboard is deployed on the Streamlit Community Cloud and available [here](https://conflict-and-trade-explorer.streamlit.app/).
+The deployment is implemented via the standard Streamlit integration with GitHub which is documented [here](https://docs.streamlit.io/deploy/streamlit-community-cloud/get-started/quickstart).
 
 
 # Project Documentation
-The Project Documentation is published [here](https://podsv-fs26-ad24.github.io/ad24-6-fancyproject/).
+The project documentation is published [here](https://podsv-fs26-ad24.github.io/ad24-6-fancyproject/).
+All of the quarto files are stored in the `./docs/` subfolder. The Quarto Book is automatically deployed to github pages by a github workflow.
+To configure the workflow, edit the file `./.github/publish.yml/`.
 
 

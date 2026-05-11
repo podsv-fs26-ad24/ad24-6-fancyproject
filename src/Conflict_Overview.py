@@ -123,6 +123,8 @@ df_conflict_counts["Log_Conflicts"] = np.log1p(df_conflict_counts["Total_Conflic
 
 st.title("Geopolitical Conflict & Trade Explorer")
 st.subheader("Military Interstate Disputes")
+st.info("This dashboard is part of a school project and not peer-reviewed. The documentation of the project and the data sources is " \
+"published [here](https://podsv-fs26-ad24.github.io/ad24-6-fancyproject/)")
 
 # --- Summary Metrics ---
 # Top-level KPIs displayed as metric cards
