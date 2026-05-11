@@ -25,3 +25,43 @@ Run `uv sync` after pulling changes to update the local environment.
 
 ## Project Directory Organization
 The 
+```
+.
+|+-.github/
+|
+|+-data/
+|   |   ->  data in csv-Format for import by cleanup script
+|   |+-clean/   -> cleaned data in parquet-format for import by dashboard
+|
+|+-data_acquisition/    -> raw data with links to sources and documentation
+|
+|+-deployment/
+|
+|+-docs/    -> quarto files for the project documentation
+|
+|+-eda/     -> script to generate eda reports & eda reports
+|
+|+-src/     -> scripts to run data-cleanup and Dashboard
+|
+|.env.template
+|.gitignore
+|.python-version
+|README.md
+```
+
+## Run Data cleaning Script
+
+In Windows:
+```powershell
+py ./src/import_and_cleaning.py
+```
+
+## Start Streamlit Dashboard locally
+In Windows:
+```powershell
+streamlit run ./src/Conflict_Overview.py
+```
+
+
+
+
