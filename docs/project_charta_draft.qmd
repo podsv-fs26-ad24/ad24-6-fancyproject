@@ -89,17 +89,39 @@ gantt
 
 ## User Analysis
 
-### Persona 1: Sarah, The Geopolitical Policy Analyst
-* **Attributes:** High domain expertise, medium data literacy, uses desktop monitors, frequent use under tight deadlines.
-* **Jobs:** Creating localized briefings on specific regional tensions; comparing current military buildups to historical precedents.
-* **Pains:** Standardizing different country codes across COW and SIPRI databases takes hours. Merging disparate academic datasets manually in Excel is highly frustrating.
-* **Gains:** A search interface where she can select a conflict or country and instantly see all relevant trade and expenditure data populated in exportable charts.
+### Persona 1: Sarah, Senior Policy Analyst
+Age: 38 | Org: Think Tank / Government Advisory | Experience: 12 years
 
-### Persona 2: David, The Academic Researcher
-* **Attributes:** High domain expertise, high data literacy, uses desktop, deep but sporadic use (during paper writing).
-* **Jobs:** Looking for macro-level correlations between economic interdependence and conflict duration.
-* **Pains:** Needs to see the exact numerical values and know precisely which years have missing data so his research is accurate.
-* **Gains:** Clear visual indicators for missing data; the ability to download the specific sliced-and-diced dataset he just created directly from the dashboard.
+* **Background:** Sarah advises ministries and international organizations on security policy. She works under constant time pressure, juggling briefings, reports, and meetings and needs data immediately, not after hours of manual research.
+
+* **Goals:**
+    - Get a comprehensive overview of a conflict or region within minutes
+    - Visually compare conflicts and trade dependencies
+    - Export findings directly for reports and stakeholder presentations
+
+* **Frustrations:**
+    - Has to manually merge data from 4–5 different sources (COW, SIPRI, UN Comtrade)
+    - Other dashboards are either too technical or lack geopolitical context
+    - Missing time series make historical comparisons tedious
+
+* **Gains:** A single explorer that lets her build a conflict-driven narrative in minutes with export functionality ready for ministerial briefings..
+
+### Persona 2: David, Investigative Data Journalist
+Age: 31 | Org: National Newspaper / Online Media | Experience: 6 years
+
+* **Background:** Marco uncovers geopolitical connections e.g. how European countries continue exporting arms despite sanctions, or what economic entanglements lie beneath a conflict. He is data-literate but not a coder.
+
+* **Goals:**
+    - Quickly identify patterns and anomalies in trade and defence spending data
+    - Back stories with concrete, publicly citable figures
+    - Use or embed visualizations directly in articles
+
+* **Frustrations:**
+    - Official data portals are nearly impossible to navigate
+    - Research that a good tool could do in hours often takes him weeks
+    - Most BI tools are too complex without programming skills
+
+* **Gains:** Moving rapidly from a hypothesis ("Did Country X keep supplying despite an embargo?") to a verifiable data finding without needing IT support.
 
 ---
 
