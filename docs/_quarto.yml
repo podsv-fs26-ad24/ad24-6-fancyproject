@@ -9,7 +9,7 @@ language:
   section-title-appendices: "Appendix"
 
 website:
-  title: "Sample Project"
+  title: "Geopoliitcal Colflic & Trade Explorer"
   search: true
   sidebar:
     style: "floating"
@@ -20,7 +20,7 @@ website:
       - viz_design_report.qmd
       - evaluation.qmd
       - meeting_notes.qmd
-      - project_charta_draft.qmd
+      - project_charta.qmd
 
 format:
   html:

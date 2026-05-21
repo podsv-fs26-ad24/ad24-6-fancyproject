@@ -90,39 +90,76 @@ gantt
 ## User Analysis
 
 ### Persona 1: Sarah, Senior Policy Analyst
-Age: 38 | Org: Think Tank / Government Advisory | Experience: 12 years
 
-* **Background:** Sarah advises ministries and international organizations on security policy. She works under constant time pressure, juggling briefings, reports, and meetings and needs data immediately, not after hours of manual research.
+::: {.callout-note appearance="minimal" icon=false}
+**Age:** 38 | **Organisation:** Think Tank / Government Advisory | **Experience:** 12 years
+:::
 
-* **Goals:**
-    - Get a comprehensive overview of a conflict or region within minutes
-    - Visually compare conflicts and trade dependencies
-    - Export findings directly for reports and stakeholder presentations
+**Background:**
+Sarah's director just asked her to prepare a briefing on the economic entanglements
+behind a regional conflict — and wants it by Thursday. She knows the data exists —
+COW, SIPRI, UN Comtrade — but it lives in three separate places, in three
+incompatible formats, and nobody has time to clean CSVs between back-to-back
+meetings. Sarah doesn't need more data. She needs a single view that turns two
+decades of historical records into a story she can put in front of a deputy minister.
 
-* **Frustrations:**
-    - Has to manually merge data from 4–5 different sources (COW, SIPRI, UN Comtrade)
-    - Other dashboards are either too technical or lack geopolitical context
-    - Missing time series make historical comparisons tedious
+**Goals:**
 
-* **Gains:** A single explorer that lets her build a conflict-driven narrative in minutes with export functionality ready for ministerial briefings..
+- Walk into a briefing with a clear visual narrative of how a conflict evolved
+  and which trade relationships were affected
+- Compare military expenditure and bilateral trade for any country pair in seconds
+- Export a chart directly into a report without reformatting it by hand
 
-### Persona 2: David, Investigative Data Journalist
-Age: 31 | Org: National Newspaper / Online Media | Experience: 6 years
+**Frustrations:**
 
-* **Background:** Marco uncovers geopolitical connections e.g. how European countries continue exporting arms despite sanctions, or what economic entanglements lie beneath a conflict. He is data-literate but not a coder.
+- Every new question means starting over: download, clean, merge, plot —
+  by which point the deadline has already passed
+- Tools built for data scientists assume she has an afternoon; she has twenty minutes
+- When time series have gaps, she can't tell if the data is missing or the trade
+  genuinely stopped — and that distinction matters enormously
 
-* **Goals:**
-    - Quickly identify patterns and anomalies in trade and defence spending data
-    - Back stories with concrete, publicly citable figures
-    - Use or embed visualizations directly in articles
+**Gains:**
+Sarah opens one tab, selects a country and a year range, and has a defensible,
+source-backed visual in under five minutes. She walks into the room prepared.
+For once, the data kept up with her.
 
-* **Frustrations:**
-    - Official data portals are nearly impossible to navigate
-    - Research that a good tool could do in hours often takes him weeks
-    - Most BI tools are too complex without programming skills
+---
 
-* **Gains:** Moving rapidly from a hypothesis ("Did Country X keep supplying despite an embargo?") to a verifiable data finding without needing IT support.
+### Persona 2: Marco, Investigative Data Journalist
 
+::: {.callout-note appearance="minimal" icon=false}
+**Age:** 31 | **Organisation:** National Newspaper / Online Media | **Experience:** 6 years
+:::
+
+**Background:**
+Marco has a hypothesis. He's read the sanctions announcements and heard the
+political speeches — but he suspects the historical numbers tell a different story.
+Somewhere in the trade data, he believes, there's evidence that arms kept flowing
+after an embargo was declared, or that military spending spiked years before a
+conflict was publicly acknowledged. He just can't prove it yet. Not because the
+data doesn't exist, but because getting to it means navigating portals designed
+for statisticians, not storytellers.
+
+**Goals:**
+
+- Spot the anomaly — the year a trade line drops to zero, the country whose
+  military spend tripled while its neighbour burned
+- Attach real numbers to a story so an editor can't say *"where's your source?"*
+- Find the visual that makes a reader immediately understand what took
+  him three weeks to uncover
+
+**Frustrations:**
+
+- He once spent two weeks building a dataset that a decent tool could have
+  assembled in an afternoon
+- He knows what he's looking for but can't always describe it in SQL —
+  he thinks in stories, not queries
+- By the time he has the data cleaned and joined, the news cycle has moved on
+
+**Gains:**
+Marco types in two country codes, picks a year range, and the pattern he
+suspected is right there in the chart — highlighted, dated, citable.
+The story writes itself.
 ---
 
 ## Situation Assessment
