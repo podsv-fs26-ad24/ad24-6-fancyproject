@@ -9,7 +9,7 @@ language:
   section-title-appendices: "Appendix"
 
 website:
-  title: "Geopoliitcal Colflic & Trade Explorer"
+  title: "Geopolitical Conflict & Trade Explorer"
   search: true
   sidebar:
     style: "floating"
@@ -25,10 +25,11 @@ website:
 format:
   html:
     theme: cosmo
-    sass-cache: false
     css: styles.css
     toc: true
+    toc-location: left
     page-layout: full
+    sass-cache: false
       
 
 number-sections: true
