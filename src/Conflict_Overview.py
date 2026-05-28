@@ -289,15 +289,17 @@ with st.container(border=True):
                 "Severity": st.column_config.TextColumn(
                     label="Severity",
                     help="""Highest severity score committed by any state  
-                    ranges from 0 - 100"""
+                    Ranges from zero to 100. Source Maoz (1982: 217-225)"""
                 ),
                 "Severity_A": st.column_config.TextColumn(
                     label="Severity A",
-                    help="Highest severity score committed by state A"
+                    help="""Highest severity score committed by state A
+                    Ranges from zero to 100. Source Maoz (1982: 217-225)"""
                 ),
                 "Severity_B": st.column_config.TextColumn(
                     label="Severity B",
-                    help="Highest severity score committed by state B"
+                    help="""Highest severity score committed by state B
+                    Ranges from zero to 100. Source Maoz (1982: 217-225)"""
                 )
             })
 
