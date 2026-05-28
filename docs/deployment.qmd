@@ -23,46 +23,64 @@ We followed the official Streamlit Community Cloud deployment instructions:
 Before deploying, we prepared the following items:
 
 1. A working Streamlit dashboard in a GitHub repository.
-2. A clear entrypoint file, for example `streamlit_app.py`.
-3. A dependency file, such as `requirements.txt`.
-4. Any required secrets or environment variables, prepared in TOML format.
-5. Access to Streamlit Community Cloud through <https://share.streamlit.io>.
+2. Allow Streamlit Cloud to access the Github Account.
+3. Access to Streamlit Community Cloud through <https://share.streamlit.io>.
 
 # Repository Structure
 
-Our repository contained the Streamlit app source code and its dependencies. A simplified structure looked like this:
 
 ```text
-project-repository/
-├── streamlit_app.py
-├── requirements.txt
-├── data/
-│   └── ...
-├── src/
-│   └── ...
-└── README.md
+project-repository
+|+-.github/
+|
+|+-data/
+|   |   ->  data in csv-Format for import by cleanup script
+|   |+-clean/   -> cleaned data in parquet-format for import by dashboard
+|
+|+-data_acquisition/    -> raw data with links to sources and documentation
+|
+|+-docs/    -> quarto files for the project documentation
+|
+|+-eda/     -> script to generate eda reports & eda reports
+|
+|+-src/     -> scripts to run data-cleanup and Dashboard File Conflict_Overview.py
+|
+|.env.template
+|.gitignore
+|.python-version
+|README.md
 ```
 
-The most important file for deployment was the **entrypoint file**. This is the Python file that Streamlit runs when the app starts.
-
-For our dashboard, the entrypoint file was `streamlit_app.py`.
 
 # Dependency Management
 
-Streamlit Community Cloud installs dependencies from the repository during deployment. Therefore, we included a `requirements.txt` file listing the Python packages needed by the dashboard.
+Streamlit Community Cloud installs dependencies from the repository during deployment. It directly uses the ``/src/ad24-6-fancyproject/uv.lock`` File.
 
-Example `requirements.txt`:
+Example entry in `uv.lock`:
 
 ```text
-streamlit
-pandas
-numpy
-plotly
-altair
-requests
+[[package]]
+name = "pandas"
+version = "2.3.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "python-dateutil" },
+    { name = "pytz" },
+    { name = "tzdata" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/79/8e/0e90233ac205ad182bd6b422532695d2b9414944a280488105d598c70023/pandas-2.3.2.tar.gz", hash = "sha256:ab7b58f8f82706890924ccdfb5f48002b83d2b5a3845976a9fb705d36c34dcdb", size = 4488684, upload-time = "2025-08-21T10:28:29.257Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/db/614c20fb7a85a14828edd23f1c02db58a30abf3ce76f38806155d160313c/pandas-2.3.2-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:3fbb977f802156e7a3f829e9d1d5398f6192375a3e2d1a9ee0803e35fe70a2b9", size = 11587652, upload-time = "2025-08-21T10:27:15.888Z" },
+    { url = "https://files.pythonhosted.org/packages/99/b0/756e52f6582cade5e746f19bad0517ff27ba9c73404607c0306585c201b3/pandas-2.3.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:1b9b52693123dd234b7c985c68b709b0b009f4521000d0525f2b95c22f15944b", size = 10717686, upload-time = "2025-08-21T10:27:18.486Z" },
+    { url = "https://files.pythonhosted.org/packages/37/4c/dd5ccc1e357abfeee8353123282de17997f90ff67855f86154e5a13b81e5/pandas-2.3.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0bd281310d4f412733f319a5bc552f86d62cddc5f51d2e392c8787335c994175", size = 11278722, upload-time = "2025-08-21T10:27:21.149Z" },
+    { url = "https://files.pythonhosted.org/packages/d3/a4/f7edcfa47e0a88cda0be8b068a5bae710bf264f867edfdf7b71584ace362/pandas-2.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:96d31a6b4354e3b9b8a2c848af75d31da390657e3ac6f30c05c82068b9ed79b9", size = 11987803, upload-time = "2025-08-21T10:27:23.767Z" },
+    { url = "https://files.pythonhosted.org/packages/f6/61/1bce4129f93ab66f1c68b7ed1c12bac6a70b1b56c5dab359c6bbcd480b52/pandas-2.3.2-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:df4df0b9d02bb873a106971bb85d448378ef14b86ba96f035f50bbd3688456b4", size = 12766345, upload-time = "2025-08-21T10:27:26.6Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/46/80d53de70fee835531da3a1dae827a1e76e77a43ad22a8cd0f8142b61587/pandas-2.3.2-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:213a5adf93d020b74327cb2c1b842884dbdd37f895f42dcc2f09d451d949f811", size = 13439314, upload-time = "2025-08-21T10:27:29.213Z" },
+    { url = "https://files.pythonhosted.org/packages/28/30/8114832daff7489f179971dbc1d854109b7f4365a546e3ea75b6516cea95/pandas-2.3.2-cp312-cp312-win_amd64.whl", hash = "sha256:8c13b81a9347eb8c7548f53fd9a4f08d4dfe996836543f805c987bafa03317ae", size = 10983326, upload-time = "2025-08-21T10:27:31.901Z" },
+]
 ```
 
-When we pushed changes to this file, Streamlit Community Cloud detected the dependency update and reinstalled the required packages.
 
 # Deployment Steps
 
@@ -74,7 +92,7 @@ From the Streamlit Community Cloud workspace, we clicked **Create app**.
 
 ## Step 2: Confirm That We Already Had an App
 
-When prompted with the question **Do you already have an app?**, we selected **Yup, I have an app**.
+When provided with three types of deployments we selected **Deploy a public app from GitHub**.
 
 This option is used when the app already exists in a GitHub repository.
 
@@ -83,29 +101,21 @@ This option is used when the app already exists in a GitHub repository.
 Next, we provided the repository information:
 
 ```text
-Repository: <GitHub user or organization>/<repository-name>
+Repository: podsv-fs26-ad24/ad24-6-fancyproject
 Branch: main
-Main file path: streamlit_app.py
+Main file path: src/Conflict_Overview.py
 ```
 
-The **main file path** points to the Streamlit entrypoint file. If the file is located in a subfolder, the path must include that folder.
+The **main file path** points to the Streamlit Dashboard file. 
 
-Example:
-
-```text
-dashboard/streamlit_app.py
-```
-
-Streamlit may suggest repositories and files automatically, but if the correct option is not listed, it can be entered manually.
+Streamlit may suggest repositories and files automatically, but if the correct option is not listed, it can be entered manually, like we had to.
 
 ## Step 4: Configure the App URL
 
-We optionally selected a custom subdomain for the app.
-
-Example:
+Streamlit provides the option to selected a custom subdomain for the app.
 
 ```text
-our-dashboard-name.streamlit.app
+conflict-and-trade-explorer.streamlit.app
 ```
 
 If no custom subdomain is selected, Streamlit Community Cloud automatically creates a unique URL based on the GitHub repository, file path, branch, and a generated hash.
@@ -118,35 +128,12 @@ Before deploying, we opened **Advanced settings**.
 
 Streamlit Community Cloud allows selecting a Python version. We used the Python version compatible with our local development environment and dependencies.
 
-Example: `Python 3.12`
+We chose: `Python 3.12`
 
 Choosing the correct Python version helps avoid compatibility problems between local development and the deployed app.
 
 ## Secrets and Environment Variables
-
-If the dashboard required API keys, database credentials, or other sensitive values, we added them in the **Secrets** field in TOML format.
-
-Example:
-
-```toml
-[database]
-host = "example-host"
-user = "example-user"
-password = "example-password"
-
-[api]
-key = "example-api-key"
-```
-
-Inside the Streamlit app, these values can be accessed with:
-
-```python
-import streamlit as st
-
-api_key = st.secrets["api"]["key"]
-```
-
-We did **not** commit secrets directly to GitHub. Secrets were managed through Streamlit Community Cloud’s secrets interface.
+We did not store any Environment Variables or Secrets.
 
 # Launching the App
 
@@ -161,18 +148,18 @@ Streamlit Community Cloud then started building and launching the app. During th
 
 # Monitoring the Deployment
 
-During deployment, Streamlit displayed logs. These logs were useful for identifying problems such as missing dependencies, incorrect file paths, Python version incompatibilities, syntax errors, missing secrets, or failed imports.
+During deployment, Streamlit displayed logs. These logs can be useful for identifying problems such as missing dependencies, incorrect file paths, Python version incompatibilities, syntax errors, missing secrets, or failed imports.
 
 Only users with write access to the GitHub repository can view these deployment logs.
 
 # Viewing the Dashboard
 
-Once deployment completed successfully, Streamlit provided a public app URL.
+Once deployment completed successfully, Streamlit provided a the final public app URL.
 
 Example:
 
 ```text
-https://our-dashboard-name.streamlit.app
+https://conflict-and-trade-explorer.streamlit.app
 ```
 
 We used this URL to open and test the deployed dashboard.
@@ -187,14 +174,14 @@ Our update workflow was:
 2. Test the app locally with:
 
    ```bash
-   streamlit run streamlit_app.py
+   streamlit run src/Conflict_Overview.py.py
    ```
 
 3. Commit the changes:
 
    ```bash
    git add .
-   git commit -m "Update dashboard"
+   git commit -m "<commit msessage>"
    ```
 
 4. Push the changes to GitHub:
@@ -203,53 +190,10 @@ Our update workflow was:
    git push
    ```
 
-5. Streamlit Community Cloud automatically picked up the changes and redeployed the app.
+5. Streamlit Community Cloud automatically pickes up the changes and redeployes the app.
 
-Code changes were reflected quickly. Dependency changes could take longer because packages may need to be reinstalled.
+Code changes are reflected quickly in the live dashboard. Dependency changes can take longer because packages may need to be reinstalled.
 
-# Common Issues We Checked
-
-## Missing Dependencies
-
-If the app worked locally but failed in the cloud, we checked whether all required packages were listed in `requirements.txt`.
-
-## Wrong Entrypoint File
-
-If Streamlit could not start the app, we verified that the main file path matched the actual location of the app file in the repository.
-
-## Missing Secrets
-
-If the app depended on API keys or database credentials, we checked that the secrets were entered in Streamlit Community Cloud and accessed correctly through `st.secrets`.
-
-## Python Version Problems
-
-If a package failed to install or import, we checked whether the selected Python version was compatible with the package.
-
-## Data File Paths
-
-If the app could not load local data files, we checked that the files were included in the repository and that paths were written relative to the project root.
-
-Example:
-
-```python
-import pandas as pd
-
-df = pd.read_csv("data/example.csv")
-```
-
-# Final Deployment Checklist
-
-Before sharing the dashboard, we confirmed that:
-
-- [ ] The app runs locally.
-- [ ] The GitHub repository contains the latest code.
-- [ ] The entrypoint file is correct.
-- [ ] `requirements.txt` includes all required packages.
-- [ ] Secrets are configured in Streamlit Community Cloud.
-- [ ] The selected Python version is compatible.
-- [ ] The app launches successfully.
-- [ ] The public URL opens correctly.
-- [ ] Main dashboard interactions work as expected.
 
 # Conclusion
 
