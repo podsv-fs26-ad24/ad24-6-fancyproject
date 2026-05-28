@@ -9,7 +9,7 @@ language:
   section-title-appendices: "Appendix"
 
 website:
-  title: "Sample Project"
+  title: "Geopolitical Conflict & Trade Explorer"
   search: true
   sidebar:
     style: "floating"
@@ -20,15 +20,16 @@ website:
       - viz_design_report.qmd
       - evaluation.qmd
       - meeting_notes.qmd
-      - project_charta_draft.qmd
+      - project_charta.qmd
 
 format:
   html:
     theme: cosmo
-    sass-cache: false
     css: styles.css
     toc: true
+    toc-location: left
     page-layout: full
+    sass-cache: false
       
 
 number-sections: true
