@@ -1,1 +1,258 @@
-# Deployment
+---
+title: "Deployment"
+author: "Project Team"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+execute:
+  echo: true
+---
+
+# Overview
+
+This document explains how we deployed our Streamlit dashboard to **Streamlit Community Cloud**. The goal was to make our dashboard publicly accessible through a hosted `streamlit.app` URL without managing our own server infrastructure.
+
+We followed the official Streamlit Community Cloud deployment instructions:
+
+<https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy>
+
+# Prerequisites
+
+Before deploying, we prepared the following items:
+
+1. A working Streamlit dashboard in a GitHub repository.
+2. A clear entrypoint file, for example `streamlit_app.py`.
+3. A dependency file, such as `requirements.txt`.
+4. Any required secrets or environment variables, prepared in TOML format.
+5. Access to Streamlit Community Cloud through <https://share.streamlit.io>.
+
+# Repository Structure
+
+Our repository contained the Streamlit app source code and its dependencies. A simplified structure looked like this:
+
+```text
+project-repository/
+├── streamlit_app.py
+├── requirements.txt
+├── data/
+│   └── ...
+├── src/
+│   └── ...
+└── README.md
+```
+
+The most important file for deployment was the **entrypoint file**. This is the Python file that Streamlit runs when the app starts.
+
+For our dashboard, the entrypoint file was `streamlit_app.py`.
+
+# Dependency Management
+
+Streamlit Community Cloud installs dependencies from the repository during deployment. Therefore, we included a `requirements.txt` file listing the Python packages needed by the dashboard.
+
+Example `requirements.txt`:
+
+```text
+streamlit
+pandas
+numpy
+plotly
+altair
+requests
+```
+
+When we pushed changes to this file, Streamlit Community Cloud detected the dependency update and reinstalled the required packages.
+
+# Deployment Steps
+
+## Step 1: Open Streamlit Community Cloud
+
+We went to <https://share.streamlit.io>.
+
+From the Streamlit Community Cloud workspace, we clicked **Create app**.
+
+## Step 2: Confirm That We Already Had an App
+
+When prompted with the question **Do you already have an app?**, we selected **Yup, I have an app**.
+
+This option is used when the app already exists in a GitHub repository.
+
+## Step 3: Select the GitHub Repository
+
+Next, we provided the repository information:
+
+```text
+Repository: <GitHub user or organization>/<repository-name>
+Branch: main
+Main file path: streamlit_app.py
+```
+
+The **main file path** points to the Streamlit entrypoint file. If the file is located in a subfolder, the path must include that folder.
+
+Example:
+
+```text
+dashboard/streamlit_app.py
+```
+
+Streamlit may suggest repositories and files automatically, but if the correct option is not listed, it can be entered manually.
+
+## Step 4: Configure the App URL
+
+We optionally selected a custom subdomain for the app.
+
+Example:
+
+```text
+our-dashboard-name.streamlit.app
+```
+
+If no custom subdomain is selected, Streamlit Community Cloud automatically creates a unique URL based on the GitHub repository, file path, branch, and a generated hash.
+
+# Advanced Settings
+
+Before deploying, we opened **Advanced settings**.
+
+## Python Version
+
+Streamlit Community Cloud allows selecting a Python version. We used the Python version compatible with our local development environment and dependencies.
+
+Example: `Python 3.12`
+
+Choosing the correct Python version helps avoid compatibility problems between local development and the deployed app.
+
+## Secrets and Environment Variables
+
+If the dashboard required API keys, database credentials, or other sensitive values, we added them in the **Secrets** field in TOML format.
+
+Example:
+
+```toml
+[database]
+host = "example-host"
+user = "example-user"
+password = "example-password"
+
+[api]
+key = "example-api-key"
+```
+
+Inside the Streamlit app, these values can be accessed with:
+
+```python
+import streamlit as st
+
+api_key = st.secrets["api"]["key"]
+```
+
+We did **not** commit secrets directly to GitHub. Secrets were managed through Streamlit Community Cloud’s secrets interface.
+
+# Launching the App
+
+After completing the deployment form, we clicked the deployment button.
+
+Streamlit Community Cloud then started building and launching the app. During this process, it:
+
+1. Cloned the GitHub repository.
+2. Installed the Python dependencies.
+3. Started the Streamlit app using the selected entrypoint file.
+4. Generated the public app URL.
+
+# Monitoring the Deployment
+
+During deployment, Streamlit displayed logs. These logs were useful for identifying problems such as missing dependencies, incorrect file paths, Python version incompatibilities, syntax errors, missing secrets, or failed imports.
+
+Only users with write access to the GitHub repository can view these deployment logs.
+
+# Viewing the Dashboard
+
+Once deployment completed successfully, Streamlit provided a public app URL.
+
+Example:
+
+```text
+https://our-dashboard-name.streamlit.app
+```
+
+We used this URL to open and test the deployed dashboard.
+
+# Updating the Dashboard
+
+After the initial deployment, updates were handled through GitHub.
+
+Our update workflow was:
+
+1. Modify the dashboard code locally.
+2. Test the app locally with:
+
+   ```bash
+   streamlit run streamlit_app.py
+   ```
+
+3. Commit the changes:
+
+   ```bash
+   git add .
+   git commit -m "Update dashboard"
+   ```
+
+4. Push the changes to GitHub:
+
+   ```bash
+   git push
+   ```
+
+5. Streamlit Community Cloud automatically picked up the changes and redeployed the app.
+
+Code changes were reflected quickly. Dependency changes could take longer because packages may need to be reinstalled.
+
+# Common Issues We Checked
+
+## Missing Dependencies
+
+If the app worked locally but failed in the cloud, we checked whether all required packages were listed in `requirements.txt`.
+
+## Wrong Entrypoint File
+
+If Streamlit could not start the app, we verified that the main file path matched the actual location of the app file in the repository.
+
+## Missing Secrets
+
+If the app depended on API keys or database credentials, we checked that the secrets were entered in Streamlit Community Cloud and accessed correctly through `st.secrets`.
+
+## Python Version Problems
+
+If a package failed to install or import, we checked whether the selected Python version was compatible with the package.
+
+## Data File Paths
+
+If the app could not load local data files, we checked that the files were included in the repository and that paths were written relative to the project root.
+
+Example:
+
+```python
+import pandas as pd
+
+df = pd.read_csv("data/example.csv")
+```
+
+# Final Deployment Checklist
+
+Before sharing the dashboard, we confirmed that:
+
+- [ ] The app runs locally.
+- [ ] The GitHub repository contains the latest code.
+- [ ] The entrypoint file is correct.
+- [ ] `requirements.txt` includes all required packages.
+- [ ] Secrets are configured in Streamlit Community Cloud.
+- [ ] The selected Python version is compatible.
+- [ ] The app launches successfully.
+- [ ] The public URL opens correctly.
+- [ ] Main dashboard interactions work as expected.
+
+# Conclusion
+
+We successfully deployed our Streamlit dashboard to Streamlit Community Cloud by connecting our GitHub repository, selecting the correct branch and entrypoint file, configuring advanced settings where needed, and launching the app through the Streamlit Community Cloud interface.
+
+This deployment approach allowed us to share the dashboard through a public `streamlit.app` URL while keeping the source code version-controlled in GitHub.
