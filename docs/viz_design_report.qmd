@@ -12,7 +12,7 @@ This report documents the visual encoding and design decisions made during the d
 
 The Project Charta defined the core concept as an "overview first, zoom and filter, then details on demand" explorer built around two analytical entry points: a conflict-centric view (select a conflict, explore its participants and context) and a state-centric view (select a country, explore its conflict and trade history). The final implementation consolidates both into a single scrollable page structured as three sequential sections: a global overview, a filterable Conflict Browser, and a Conflict Analyzer that provides the details-on-demand layer.
 
-Two refinements emerged during the design process relative to the original charta concept. First, the relational network graph proposed for the "State" entry point was replaced by a grouped bar chart showing conflict involvement in a ±5-year window around the selected conflict. This decision was driven by data structure constraints: the COW alliance dataset is dyadic (one record per country pair) and does not lend itself to a performant force-directed network without substantial pre-computation. The bar chart achieves the same analytical goal — contextualising a conflict within the military activity of its participants — with lower implementation complexity and more predictable visual output. Second, the global time slider proposed in the charta was not implemented; instead, time is parameterised locally within each section, which avoids the coordination overhead of a global filter while preserving the ability to query any time window within each view.
+Two refinements emerged during the design process relative to the original charta concept. First, the relational network graph proposed for the "State" entry point was replaced by a grouped bar chart showing conflict involvement in a ±5-year window around the selected conflict. This decision was driven by data structure constraints: the COW alliance dataset is dyadic (one record per country pair) and does not lend itself to a performant force-directed network without substantial pre-computation. The bar chart achieves the same analytical goal — contextualising a conflict within the military activity of its participants — with lower implementation complexity and more predictable visual output. Second, the global time slider proposed in the charta was not implemented; instead, time is parameterised locally within each section, which avoids the coordination overhead of a global filter while preserving the ability to query and adjust any time window within each view.
 
 The design directly targets the two user personas from the charta: **Sarah Müller** (policy analyst, needs a conflict-and-trade narrative in under five minutes) and **Marco Ferretti** (investigative journalist, needs to spot anomalies and retrieve citable numbers). Both users are served by a dashboard that, in Bach et al. (2022) terminology, falls squarely into the **analytic dashboard** genre: it uses complete, interactive visualizations, supports exploration and drilldown, and relies on parameterization rather than curated narrative.
 
@@ -27,7 +27,7 @@ The map aggregates all COW Militarized Interstate Dispute (MID) records per coun
 - **Data variables**: `Statecode` (ISO3 country code, categorical), `Total_Conflicts` (count, quantitative).
 - **Marks**: Filled country polygons (area marks).
 - **Visual channels**: Colour lightness/saturation using the `YlGnBu` sequential palette — lighter yellow for fewer conflicts, darker blue for more.
-- **Scale**: The raw conflict counts span roughly 1 to 300+. A `log1p` transform is applied before mapping to the colour scale to prevent the US and China from saturating the palette and washing out lower-involvement states. The colorbar is annotated with human-readable tick labels (1, 10, 100, 300) on the untransformed scale.
+- **Scale**: The raw conflict counts span roughly 1 to 300+. A `log1p` transform is applied before mapping to the colour scale to prevent the US, Russia and China from saturating the palette and washing out lower-involvement states. The colorbar is annotated with human-readable tick labels (1, 10, 100, 300) on the untransformed scale.
 - **Projection**: Equirectangular, chosen for familiarity and correct rendering in Plotly's choropleth implementation.
 
 **Global Ongoing Conflicts Over Time (Line Chart)**
@@ -120,8 +120,6 @@ The primary coordination mechanism is the **Conflict ID selector** in the Confli
 
 The trade section also inherits context from the Conflict Analyzer: country selection defaults to the two involved states and the year input defaults to the conflict's start year. Users can override these defaults to expand the trade analysis beyond the conflict dyad.
 
-There is no brushing-and-linking between the global time-series chart and the Conflict Browser; these sections are independent analytical entry points rather than coordinated views.
-
 ### Hierarchy and Navigation
 
 Navigation is purely linear — the user scrolls down through the stratified layout. There are no tabs, no separate pages, and no hyperlinks between sections. This single-page structure (Bach et al., 2022) was a deliberate choice: the project charta scoped the dashboard to a single Streamlit page, and splitting across tabs would break the visible workflow from Browser to Analyzer.
@@ -130,7 +128,7 @@ Within the Conflict Analyzer, the selectbox for Conflict ID acts as an in-page n
 
 ### Responsive Design
 
-The dashboard is explicitly desktop-optimised (`layout="wide"` in `st.set_page_config`). No responsive adaptation for mobile viewports was implemented, consistent with the charta constraint that screen real estate for exploratory dashboards requires desktop space.
+The dashboard is explicitly desktop-optimised (`layout="wide"` in `st.set_page_config`). No responsive adaptation for mobile devices was implemented, consistent with the charta constraint that screen real estate for exploratory dashboards requires desktop space.
 
 ## Interaction Design
 
@@ -209,7 +207,7 @@ The delivered prototype is **high-fidelity**: a fully interactive, data-connecte
 - **Data processing**: pandas, NumPy
 - **Interactive charts**: Plotly Express (`px.choropleth`, `px.line`, `px.bar`) and Plotly Graph Objects (`go.Figure`, `go.Sankey`)
 - **Data format**: Apache Parquet (pre-cleaned, loaded at startup via `pd.read_parquet`)
-- **Caching**: `@st.cache_data` for the global conflict aggregation function
+- **Caching**: `@st.cache_data` for the data aggregation functions
 
 ### Links
 

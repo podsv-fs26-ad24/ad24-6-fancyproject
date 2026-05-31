@@ -22,7 +22,7 @@ These dimensions map directly onto the success criteria from the charta: replaci
 
 ### Evaluation Method
 
-Due to time and resource constraints inherent to an academic project context, **no formal user testing or standardised questionnaire-based evaluation** (e.g. SUS, NASA-TLX) was conducted. No participants from the target user segments were recruited, and no think-aloud sessions or task completion studies were run.
+Due to time and resource constraints inherent to an academic project context and because we do not have access to test users from the target user group, **no formal user testing or standardised questionnaire-based evaluation** (e.g. SUS, NASA-TLX) was conducted. 
 
 The evaluation therefore relied exclusively on **heuristic evaluation** conducted by the development team. This involved structured expert review of the prototype against:
 
@@ -77,38 +77,23 @@ The conflict-period shading logic (single-year dashed line vs. multi-year red ba
 
 The most significant gap is the **absence of user testing**. The heuristic evaluation reflects the team's own mental model of the interface, which is subject to familiarity bias. Without task-based testing with Sarah- or Marco-type users, it is not possible to confirm that the Conflict Browser's filter logic is discoverable, that the Conflict ID entry point in the Analyzer is intuitive, or that the MILEX availability warning is noticed before a user dismisses an empty chart as a bug.
 
-A secondary gap is the **lack of missing data signalling** in the trade charts. When trade data is absent for a country pair in a given year, the line chart simply shows no data point. This means users cannot distinguish between zero trade and missing records — a distinction the charta explicitly flagged as critical for Marco's use case.
-
 ### Trade-offs Between Value Dimensions
 
 The dashboard prioritises analytical depth and data fidelity over accessibility for lower data-literacy users. This is the correct trade-off given the target audience (policy analysts and researchers with moderate to high data literacy), but it means the tool would require additional contextual guidance — embedded explanations, glossary tooltips, or onboarding text — before it could be extended to a broader public audience.
 
 ### Limitations of the Evaluation
 
-The heuristic evaluation has three structural limitations. First, it was conducted by the same team that built the product, introducing confirmation bias. Second, without behavioural data (click paths, session lengths, drop-off points), the quantitative success criterion of >10 interactions per session cannot be assessed. Third, the evaluation was conducted on the prototype in a controlled local environment; performance characteristics under realistic network conditions and with full-size parquet files were not systematically tested.
+The heuristic evaluation has three structural limitations. First, it was conducted by the same team that built the product, introducing confirmation bias. Second, without behavioral data (click paths, session lengths, drop-off points), the quantitative success criterion of >10 interactions per session cannot be assessed. Third, the evaluation was conducted on our own devices with good internet connections. Performance characteristics under realistic network conditions were not systematically tested.
 
 ## Checkpoint Decision
 
 **Decision: Proceed to submission with documented limitations.**
 
-The prototype meets the core functional objectives defined in the charta: it delivers a linked, reactive dashboard that allows conflict-centric and state-centric exploration of COW and SIPRI data without requiring technical skills from the user. The identified gaps — missing data signalling in trade charts, absent in-chart source attribution, and no user validation — are documented and would constitute the primary backlog for a post-submission iteration.
+The prototype meets the core functional objectives defined in the charta: it delivers a linked, reactive dashboard that allows conflict-centric and state-centric exploration of COW and SIPRI data without requiring technical skills from the user. The identified gap — no user validation, missing loading spinner — is documented and would constitute the primary backlog for a post-submission iteration.
 
 This decision was taken by the full project team (Patrik Pnishi, Aron Monn, Jan Müller) on 2026-05-31.
 
 A formal iteration cycle would require:
 
 - Recruitment of 3–5 participants from the target segments for task-based usability testing
-- Addition of explicit missing-data markers (e.g. dashed-line segments or gap annotations) to the trade and MILEX charts
-- In-chart data source labels (e.g. "Source: COW Bilateral Trade v4.0") attached to each plot
 - A loading spinner for computationally intensive views such as the Sankey diagram
-
-## Additional Requirements and Deployment Planning
-
-The dashboard is prepared for deployment as documented on the project website. The following requirements apply:
-
-- **Data refresh**: The COW and SIPRI parquet files are static snapshots. Any update to the underlying datasets requires re-running the data cleaning pipeline and replacing the parquet files in `./data/clean/`.
-- **Access control**: The dashboard is intended for public access. No authentication layer is required at this stage.
-- **Performance**: The `@st.cache_data` decorator on `get_conflicts_counts` should be extended to additional computationally heavy functions if session response times degrade under concurrent user load.
-- **Attribution**: The project documentation and data source references are accessible via the info-banner at the top of the dashboard. This link should remain stable through the submission and presentation period.
-
-Any presentation material prepared for the final exam presentation should be stored in the `docs` folder alongside this report.

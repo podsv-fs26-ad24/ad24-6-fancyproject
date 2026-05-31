@@ -275,6 +275,35 @@ Furthermore, in some of the datasets there exists data from countries that do no
 
 
 ## Processed Data
+
+### Data Processing Steps
+
+### Processing Steps
+All of the data pre-processing is done by the code in the script ``./src/import_and_cleaning.py``. By executing the script, the raw data is loaded, cleaned and then written to ``./data/clean`` as parquet files. The parquet files are then being loaded by streamlit when the dashboard is started.
+An easy way to read parquet files is to use the ``.read_parquet()`` method from pandas.
+The steps below follow the order in `import_and_cleaning.ipynb`.
+
+**1. Column selection**  
+Only the columns relevant for the dashboard are kept. For the conflicts dataset these are dispute number, both state codes, year, start and end year, outcome, fatality level, hostility, roles, and severity scores. For trade, the two state codes, year, importer names, and both flow values are retained. For alliances, both state codes and names, dyad start and end year, alliance type flags, and year are kept. The MILEX dataset is loaded in its entirety since it is already narrow.
+
+**2. Column renaming**  
+All retained columns are renamed to consistent, human-readable labels (e.g. `disno` → `Conflict_ID`, `fatlev` → `Fatality_Level`, `flow1` → `Flow_1`). This standardisation ensures uniform column names across the dashboard.
+
+**3. Country code translation (COW → ISO 3166-1 alpha-3)**  
+The COW datasets use their own numeric country codes. These are mapped to standard ISO 3-letter codes using a lookup table (`countries.csv`). Both the `Statecode_A` and `Statecode_B` columns in the conflicts, trade, and alliances datasets are translated. Rows whose COW code has no corresponding ISO code — historical states that no longer exist — receive `NaN` after the mapping.
+
+**4. Dropping unmappable countries**  
+Any row containing a `NaN` in any column is dropped via `dropna()`. In practice this removes conflicts, trade flows, and alliance relationships involving historical entities such as Yugoslavia, the German Democratic Republic, or Czechoslovakia, which cannot be projected onto a current world map.
+
+**5. Missing value handling in trade flows**  
+The COW Trade dataset encodes missing trade flow values as `-9.0`. These are replaced with `None` so that they are treated as proper missing values rather than negative trade figures.
+
+**6. Categorical value decoding**  
+Three columns in the conflicts dataset store numeric codes that represent categorical labels. These are decoded to human-readable strings using dictionaries derived from the dataset codebook: `Outcome` (e.g. `1` → `"Victory for State A"`), `Role_A` / `Role_B` (e.g. `3` → `"Primary target"`), and `Hostility` (e.g. `4` → `"Use of Force"`).
+
+**7. MILEX reshaping (wide → long)**  
+The MILEX dataset arrives in wide format with one column per year. It is melted into long format with three columns: `Country`, `Year`, and `Expenditure`. The `Year` column is cast to integer and `Expenditure` is coerced to numeric, with non-numeric entries (such as the `xxx` placeholder SIPRI uses for suppressed values) silently converted to `NaN`. Finally, a `Statecode` column is added by mapping country names to ISO codes using a manually maintained lookup dictionary.
+
 ### Overview Processed Datasets
 
 : Overview of processed datasets used in the project. {#tbl-processed-overview}
@@ -285,9 +314,6 @@ Furthermore, in some of the datasets there exists data from countries that do no
 | Alliances | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/clean/alliances.parquet) |
 | Trade | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/clean/trade.parquet) |
 | Military Expenditure | [Link](https://github.com/podsv-fs26-ad24/ad24-6-fancyproject/blob/main/data/clean/milex.parquet) | 
-
-All of the data pre-processing is done by the code in the script ``./src/import_and_cleaning.py``. By executing the script, the raw data is loaded, cleaned and then written to ``./data/clean`` as parquet files. The parquet files are then being loaded by streamlit when the dashboard is started.
-An easy way to read parquet files is to use the ``.read_parquet()`` method from pandas.
 
 
 ### Details Processed Dataset 1

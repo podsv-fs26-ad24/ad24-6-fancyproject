@@ -48,7 +48,7 @@ def get_conflicts_counts(data: pd.DataFrame):
     
     return final_counts
 
-
+@st.cache_data
 def get_country_alliances(country_code: str, year: int, data: pd.DataFrame) -> pd.DataFrame:
     """Return all alliance partners a country had in a given year, with alliance types."""
 
@@ -100,7 +100,7 @@ def get_country_alliances(country_code: str, year: int, data: pd.DataFrame) -> p
                    "End_Year":     "Until",
                })
 
-
+@st.cache_data
 def get_global_conflict_count(data: pd.DataFrame):
     """Return df with unique conflict count per year."""
     # Drop duplicate Conflict_ID/Year pairs so each conflict is counted once per year
@@ -611,7 +611,7 @@ with st.container(border=True):
 
             fig_milex.add_annotation(
                 text="Source: SIPRI Military Expenditure Database · <a href='https://doi.org/10.55163/CQGC9685'>doi.org/10.55163/CQGC9685</a>",
-                xref="paper", yref="paper", x=0, y=-0.30,
+                xref="paper", yref="paper", x=0, y=-0.40,
                 showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
             )
             st.plotly_chart(fig_milex, use_container_width=True)
@@ -875,7 +875,7 @@ with st.container(border=True):
                 )
                 fig.add_annotation(
                     text="Source: Barbieri & Keshk (2016) – COW Trade v4.0 · <a href='https://correlatesofwar.org/data-sets/bilateral-trade/'>correlatesofwar.org</a>",
-                    xref="paper", yref="paper", x=0, y=-0.30,
+                    xref="paper", yref="paper", x=0, y=-0.10,
                     showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
                 )
                 st.markdown(f"#### Multilateral Trade Network ({selected_year})")
