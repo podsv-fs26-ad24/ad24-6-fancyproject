@@ -1,0 +1,29 @@
+---
+title: "Methods & References"
+author: "Project Team"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+execute:
+  echo: true
+---
+
+# Methods
+
+## Use of Generative AI
+Generative AI tools were used at several stages of this project. Claude (Anthropic) was used extensively throughout: for drafting and refining written sections of the project documentation (Project Charta, Data Report, Visualization Design Report, Evaluation Report) and for debugging Streamlit and Plotly code. ChatGPT was used for grammar and spell checking and for brainstorming early ideas around the dashboard layout and the choice of datasets.
+The use of generative AI meaningfully sped up both the implementation and documentation phases of the project, but it also introduced risks that we had to manage actively. The most persistent risk was accepting output that sounded technically correct but did not quite fit our specific data structure or Streamlit's execution model. The COW and SIPRI datasets have their own quirks — dyadic records, entity-code mismatches, coverage gaps. AI-generated code that worked in the abstract sometimes produced silent errors or misleading results when applied to our actual data. We caught most of these only by running the code against real data and inspecting the output carefully. Written sections drafted with AI assistance were always reviewed and revised for factual accuracy, for consistency with the Project Charta, and to make sure they actually described what we built rather than a generic version of it. We therefore consider generative AI to have functioned as a productivity tool rather than a substitute for our own understanding of the data and the design decisions.
+
+
+
+# Bibliography
+
+**List of AI tools used**
+OpenAI. (2026). ChatGPT (version 5.5). 
+https://openai.com/de-DE/index/introducing-gpt-5-5/ - Generation of text proposals for the project documentation - Code debugging - Grammar and spell checking - Brainstorming project ideas
+
+Anthropic. (2026). Claude Sonnet (version 4.6)
+https://www.anthropic.com/claude/sonnet - Code debugging - Proposing ideas for   
+  

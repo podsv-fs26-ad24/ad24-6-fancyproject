@@ -21,6 +21,7 @@ website:
       - evaluation.qmd
       - project_charta.qmd
       - deployment.qmd
+      - references.qmd
 
 format:
   html:

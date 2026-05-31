@@ -1,5 +1,5 @@
 ---
-title: "Evaluation Report: Geopolitical Conflict & Trade Explorer"
+title: "Evaluation Report"
 author: "DROP Inc"
 date: "2026-05-31"
 ---
