@@ -169,7 +169,7 @@ with st.container(border=True):
             tickfont=dict(color="black")
         ),
         geo=dict(showframe=False, showcoastlines=True, projection_type='equirectangular'),
-        margin={"r":0,"t":0,"l":0,"b":0},
+        margin={"r":0,"t":0,"l":0,"b":40},
         height=750
     )
     fig.add_annotation(
@@ -194,6 +194,7 @@ with st.container(border=True):
     
     fig_glob_conflicts.update_layout(
         height=550,
+        margin=dict(b=80),
         font=dict(size=vis_annot_size),
         xaxis=dict(
             title_font=dict(color="black", size=vis_annot_size),   
@@ -208,8 +209,8 @@ with st.container(border=True):
     )
     fig_glob_conflicts.add_annotation(
         text="Source: Palmer et al. (2015) – COW MID4 · <a href='https://correlatesofwar.org/data-sets/mids/'>correlatesofwar.org</a>",
-        xref="paper", yref="paper", x=0, y=-0.12,
-        showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+        xref="paper", yref="paper", x=0, y=-0.15,
+        showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
     )
 
     st.plotly_chart(fig_glob_conflicts, use_container_width=True)
@@ -362,13 +363,22 @@ with st.container(border=True):
             showland=True,
             landcolor="lightgray"  # Non-involved countries rendered in gray for contrast
         ),
-        margin={"r":0,"t":0,"l":0,"b":0},
+        margin={"r":0,"t":0,"l":0,"b":80},
         height=400,
         font=dict(size=vis_annot_size),
         legend_title_text="Involved Parties",
         legend_font=dict(color="black", size=vis_annot_size),        
         legend_title_font=dict(color="black", size=vis_annot_size)
     )
+    fig.add_annotation(
+    text="Source: Palmer et al. (2015) – COW MID4 · <a href='https://correlatesofwar.org/data-sets/mids/'>correlatesofwar.org</a>",
+    xref="paper", yref="paper",
+    x=0, y=-0.30,          # bottom-left, just below the chart
+    showarrow=False,
+    font=dict(size=vis_annot_size, color="gray"),
+    align="left",
+    xanchor="left",
+)
 
     st.plotly_chart(fig_conflict_map, use_container_width=True)
 
@@ -404,6 +414,7 @@ with st.container(border=True):
                 st.info("No alliance data found for this country / year.")
             else:
                 st.dataframe(alliances_a, use_container_width=True, hide_index=True)
+                st.caption("Source: Gibler (2009) - COW Formal Alliances· https://correlatesofwar.org/data-sets/formal-alliances/")
 
     with col7:
         with st.container(border=True):
@@ -421,6 +432,7 @@ with st.container(border=True):
                 st.info("No alliance data found for this country / year.")
             else:
                 st.dataframe(alliances_b, use_container_width=True, hide_index=True)
+                st.caption("Source: Gibler (2009) - COW Formal Alliances· https://correlatesofwar.org/data-sets/formal-alliances/")
     
 
     # --- Conflict Activity Bar Chart (±5 years around the conflict) ---
@@ -498,6 +510,7 @@ with st.container(border=True):
 
         fig_activity.update_layout(
             height=350,
+            margin=dict(b=80),
             font=dict(size=vis_annot_size),
             xaxis=dict(
                 tickmode="linear",  # Force a tick for every year on the x-axis
@@ -514,7 +527,7 @@ with st.container(border=True):
         )
         fig_activity.add_annotation(
             text="Source: Palmer et al. (2015) – COW MID4 · <a href='https://correlatesofwar.org/data-sets/mids/'>correlatesofwar.org</a>",
-            xref="paper", yref="paper", x=0, y=-0.18,
+            xref="paper", yref="paper", x=0, y=-0.30,
             showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
         )
 
@@ -580,6 +593,7 @@ with st.container(border=True):
 
             fig_milex.update_layout(
                 height=350,
+                margin=dict(b=80),
                 font=dict(size=vis_annot_size),
                 xaxis=dict(
                     tickmode="linear",  # Force a tick for every year
@@ -597,7 +611,7 @@ with st.container(border=True):
 
             fig_milex.add_annotation(
                 text="Source: SIPRI Military Expenditure Database · <a href='https://doi.org/10.55163/CQGC9685'>doi.org/10.55163/CQGC9685</a>",
-                xref="paper", yref="paper", x=0, y=-0.18,
+                xref="paper", yref="paper", x=0, y=-0.30,
                 showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
             )
             st.plotly_chart(fig_milex, use_container_width=True)
@@ -670,6 +684,7 @@ with st.container(border=True):
 
         fig_line.update_layout(
             height=450,
+            margin=dict(b=80),
             font=dict(size=vis_annot_size),
             yaxis_title="Trade flow [Mio USD]",
             legend_title="Trade Direction",
@@ -735,6 +750,7 @@ with st.container(border=True):
 
             fig_line.update_layout(
                 height=450,
+                margin=dict(b=80),
                 font=dict(size=vis_annot_size),
                 yaxis_title="Trade flow [Mio USD]",
                 legend_title="Trade Direction",
@@ -767,7 +783,7 @@ with st.container(border=True):
 
             fig_line.add_annotation(
                 text="Source: Barbieri & Keshk (2016) – COW Trade v4.0 · <a href='https://correlatesofwar.org/data-sets/bilateral-trade/'>correlatesofwar.org</a>",
-                xref="paper", yref="paper", x=0, y=-0.12,
+                xref="paper", yref="paper", x=0, y=-0.30,
                 showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
             )
 
@@ -854,11 +870,12 @@ with st.container(border=True):
 
                 fig.update_layout(
                     font_size=vis_annot_size,
-                    height=600 
+                    height=600,
+                    margin=dict(b=80) 
                 )
                 fig.add_annotation(
                     text="Source: Barbieri & Keshk (2016) – COW Trade v4.0 · <a href='https://correlatesofwar.org/data-sets/bilateral-trade/'>correlatesofwar.org</a>",
-                    xref="paper", yref="paper", x=0, y=-0.05,
+                    xref="paper", yref="paper", x=0, y=-0.30,
                     showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
                 )
                 st.markdown(f"#### Multilateral Trade Network ({selected_year})")
