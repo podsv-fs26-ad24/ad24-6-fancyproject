@@ -1,70 +1,258 @@
+---
+title: "Visualization Design Report: Geopolitical Conflict & Trade Explorer"
+author: "DROP Inc"
+date: "2026-05-31"
+---
+
 # Visualization Design Report
-This report documents the visual encoding and design decisions made during the development of the visualization product. It translates the visualization concept outlined in the [Project Charta](project_charta.qmd) into concrete design specifications and documents the resulting prototype(s).
+
+This report documents the visual encoding and design decisions made during the development of the *Geopolitical Conflict & Trade Explorer* dashboard. It translates the visualization concept outlined in the [Project Charta](project_charta.qmd) into concrete design specifications and documents the resulting prototype.
 
 ## Design Overview
-Briefly summarise the visualization concept from the Project Charta and describe any refinements or changes that emerged during the design process. Reference the project objectives and user needs that drive the design.
+
+The Project Charta defined the core concept as an "overview first, zoom and filter, then details on demand" explorer built around two analytical entry points: a conflict-centric view (select a conflict, explore its participants and context) and a state-centric view (select a country, explore its conflict and trade history). The final implementation consolidates both into a single scrollable page structured as three sequential sections: a global overview, a filterable Conflict Browser, and a Conflict Analyzer that provides the details-on-demand layer.
+
+Two refinements emerged during the design process relative to the original charta concept. First, the relational network graph proposed for the "State" entry point was replaced by a grouped bar chart showing conflict involvement in a ±5-year window around the selected conflict. This decision was driven by data structure constraints: the COW alliance dataset is dyadic (one record per country pair) and does not lend itself to a performant force-directed network without substantial pre-computation. The bar chart achieves the same analytical goal — contextualising a conflict within the military activity of its participants — with lower implementation complexity and more predictable visual output. Second, the global time slider proposed in the charta was not implemented; instead, time is parameterised locally within each section, which avoids the coordination overhead of a global filter while preserving the ability to query any time window within each view.
+
+The design directly targets the two user personas from the charta: **Sarah Müller** (policy analyst, needs a conflict-and-trade narrative in under five minutes) and **Marco Ferretti** (investigative journalist, needs to spot anomalies and retrieve citable numbers). Both users are served by a dashboard that, in Bach et al. (2022) terminology, falls squarely into the **analytic dashboard** genre: it uses complete, interactive visualizations, supports exploration and drilldown, and relies on parameterization rather than curated narrative.
 
 ## Data-to-Visual Mapping
-Document the mapping of data variables to visual channels. For each view or chart in the visualization product, describe:
 
-* **Data variables**: Which variables from the processed datasets (see [Data Report](data_report.qmd)) are represented?
-* **Marks**: What geometric primitives are used to represent data items – points, lines, areas, volumes?
-* **Visual channels**: How are data attributes encoded – position, length, angle, area, colour hue, colour saturation, brightness, shape, orientation, texture?
-* **Scale and axis design**: What scales are used (linear, logarithmic, categorical, temporal)? How are axes labelled and annotated?
-* **Colour design**: What colour palette is used and why? Consider colour-blindness accessibility (e.g. using `viridis`, `ColorBrewer` palettes) and semantic colour mappings (e.g. red for negative, green for positive).
+### Global Overview Section
 
-A tabular overview can help provide a quick summary:
+**Global Conflict Involvement Choropleth Map**
+
+The map aggregates all COW Militarized Interstate Dispute (MID) records per country and encodes total conflict count using a colour-filled polygon (area mark) on a world map.
+
+- **Data variables**: `Statecode` (ISO3 country code, categorical), `Total_Conflicts` (count, quantitative).
+- **Marks**: Filled country polygons (area marks).
+- **Visual channels**: Colour lightness/saturation using the `YlGnBu` sequential palette — lighter yellow for fewer conflicts, darker blue for more.
+- **Scale**: The raw conflict counts span roughly 1 to 300+. A `log1p` transform is applied before mapping to the colour scale to prevent the US and China from saturating the palette and washing out lower-involvement states. The colorbar is annotated with human-readable tick labels (1, 10, 100, 300) on the untransformed scale.
+- **Projection**: Equirectangular, chosen for familiarity and correct rendering in Plotly's choropleth implementation.
+
+**Global Ongoing Conflicts Over Time (Line Chart)**
+
+- **Data variables**: `Year` (temporal), `ccount` (unique conflict count per year, quantitative).
+- **Marks**: Lines with implied area beneath.
+- **Visual channels**: x-position (year, linear temporal scale), y-position (conflict count, linear quantitative scale).
+- **Colour**: Single static navy line (`#225ea8`); no categorical encoding is needed as there is only one series.
+
+### Conflict Browser Section
+
+A filtered, interactive data table (no chart). The table surfaces the raw MID records with applied filters for State A, State B, year range, and hostility level. It is the primary entry point for users to identify a Conflict ID for deeper analysis — corresponding to the drilldown pattern in Bach et al. (2022).
+
+- **Data variables**: `Conflict_ID`, `Statecode_A`, `Statecode_B`, `Start_Year`, `End_Year`, `Hostility`, `Fatality_Level`, `Severity`, `Severity_A`, `Severity_B`, `Role_A`, `Role_B`.
+- **Marks**: Text cells in a tabular grid.
+- **Visual channels**: Position (column/row). No additional encoding is applied; precise reading of values is the primary task.
+
+### Conflict Analyzer Section
+
+**Conflict Location Map**
+
+A focused choropleth showing only the two countries involved in the selected conflict, coloured by side.
+
+- **Data variables**: `Statecode_A`, `Statecode_B` (categorical, two-level).
+- **Marks**: Filled country polygons.
+- **Visual channels**: Colour hue — `#225ea8` (navy) for State A, `#7fcdbb` (teal) for State B. Non-involved countries are rendered in light gray, providing a neutral figure-ground contrast.
+
+**Conflict Activity Bar Chart (±5 years)**
+
+A grouped bar chart showing how many conflicts each of the two involved countries engaged in per year, in a window five years before and after the selected conflict's start and end dates.
+
+- **Data variables**: `Start_Year` (temporal), `Conflict_Count` (quantitative), `Country` (categorical, two-level).
+- **Marks**: Rectangular bars.
+- **Visual channels**: x-position (year, linear temporal), y-position (conflict count, linear quantitative), colour hue (country: `#225ea8` for State A, `#7fcdbb` for State B).
+- **Annotation**: A red dashed vertical line marks single-year conflicts; a semi-transparent red filled rectangle (`opacity=0.15`) marks multi-year conflict periods. This is a threshold/annotation pattern that directly supports Sarah's task of reading military posture relative to the conflict timeline.
+
+**Military Expenditure Line Chart (±5 years)**
+
+A multi-series line chart showing SIPRI military expenditure in millions USD for both countries in the ±5-year window.
+
+- **Data variables**: `Year` (temporal), `Expenditure` (quantitative, millions USD), `Statecode` (categorical, two-level).
+- **Marks**: Lines with point markers.
+- **Visual channels**: x-position (year, linear temporal), y-position (expenditure, linear quantitative), colour hue (same two-country mapping as above for cross-chart consistency), point markers to make individual data points readable given the small number of observations per series.
+- **Annotation**: Same conflict-period shading as the activity bar chart. A data-availability note is embedded in the chart title via an info-icon (`ℹ️`) tooltip: SIPRI data is only available from 1988 to 2024.
+
+**Trade Flow Line Chart (±5 years)**
+
+A multi-series line chart showing bilateral import flows between the two countries in the ±5-year window, with directional labelling (e.g., "CHN → USA", "USA → CHN").
+
+- **Data variables**: `Year` (temporal), `Flow_1` / `Flow_2` (quantitative, millions USD, two directional flows), country pair (categorical).
+- **Marks**: Lines with point markers.
+- **Visual channels**: x-position (year), y-position (trade volume), colour hue (one per directional flow, auto-assigned by Plotly). Conflict-period shading reused from the charts above.
+
+**Multilateral Trade Sankey Diagram**
+
+When two or more countries are selected in the Trade filter, a Sankey diagram renders bilateral trade flows for the selected year.
+
+- **Data variables**: `Statecode_A`, `Statecode_B` (categorical), `Flow_1`, `Flow_2` (quantitative).
+- **Marks**: Nodes (country labels, left origin / right destination) and directed flow bands (area proportional to trade volume).
+- **Visual channels**: Band width (trade volume, linear quantitative), node colour hue (one colour per country from `px.colors.qualitative.Set3`, consistent across origin and destination nodes). Negative flow values are clamped to zero before rendering.
+
+---
 
 : Data-to-visual mapping overview. {#tbl-encoding-overview}
 
 | View / Chart | Data variables | Mark type | Visual channels | Scale |
 |---|---|---|---|---|
-| e.g. Sales by Region | region (cat.), revenue (quant.) | bar | x-position, length, colour hue | categorical, linear |
-| ... | ... | ... | ... | ... |
+| Global choropleth | Statecode, Total_Conflicts | Area (polygon) | Colour lightness (YlGnBu) | log1p → linear colour |
+| Global conflicts over time | Year, ccount | Line | x-position, y-position | Linear temporal, linear quant. |
+| Conflict browser | All MID fields | Text (table cells) | Position | Categorical / linear |
+| Conflict location map | Statecode_A/B | Area (polygon) | Colour hue (2-level) | Nominal |
+| Activity bar chart | Start_Year, Conflict_Count, Country | Bar (rectangle) | x-pos, y-pos, colour hue | Linear temporal, linear quant., nominal |
+| MILEX line chart | Year, Expenditure, Statecode | Line + point | x-pos, y-pos, colour hue | Linear temporal, linear quant., nominal |
+| Trade flow line chart | Year, Flow_1/2, country pair | Line + point | x-pos, y-pos, colour hue | Linear temporal, linear quant., nominal |
+| Trade Sankey | Statecode, Flow_1/2 | Node + band | Band width, node colour hue | Linear quant., nominal |
 
 ## Layout and Composition
-Describe how individual views are composed into the overall visualization product:
 
-* **Spatial arrangement**: How are views arranged on the screen or page? Grid layout, free-form, scrollable narrative, etc.
-* **Coordination between views**: Are views linked (e.g. brushing and linking, shared filters, coordinated highlighting)?
-* **Hierarchy and navigation**: How does the user navigate between different levels of detail or different thematic sections?
-* **Responsive design**: How does the layout adapt to different screen sizes and devices, if applicable?
+### Spatial Arrangement
 
-Include annotated wireframes or layout sketches to illustrate the composition.
+The dashboard uses a **stratified layout** (Bach et al., 2022) with a vertical top-down ordering: global overview at the top, the Conflict Browser in the middle, and the Conflict Analyzer at the bottom. This hierarchy reflects the analytical workflow defined in the charta — orient globally, identify a conflict of interest, then drill into its details. Within each section, Streamlit's `st.container(border=True)` provides visual grouping through bordered cards, implementing the **grouped layout** pattern.
+
+The global overview section places the choropleth and time-series chart within a single bordered container, using full page width (`use_container_width=True`). The Conflict Analyzer uses a two-column layout (`st.columns(2)`) for the State A / State B detail cards, and full-width containers for the map and time-series charts above and below. This implements a local **table layout** for the per-country comparison while maintaining a **stratified layout** at the page level.
+
+The dashboard uses **overflow** screenspace (Bach et al., 2022): the page is longer than a single screen and is explored through vertical scrolling. This is appropriate for an analytic dashboard targeting expert users on desktop screens, where comparing views across sections is less critical than providing access to all data.
+
+### Coordination Between Views
+
+The primary coordination mechanism is the **Conflict ID selector** in the Conflict Analyzer. Once a conflict is selected from the browser table, all charts in the Analyzer section update reactively: the location map, the summary stats card, the alliance tables, the activity bar chart, the MILEX chart, and the pre-populated trade filters all reflect the selected conflict. This implements Streamlit's single-pass reactive model as a form of shared parameterization (Bach et al., 2022).
+
+The trade section also inherits context from the Conflict Analyzer: country selection defaults to the two involved states and the year input defaults to the conflict's start year. Users can override these defaults to expand the trade analysis beyond the conflict dyad.
+
+There is no brushing-and-linking between the global time-series chart and the Conflict Browser; these sections are independent analytical entry points rather than coordinated views.
+
+### Hierarchy and Navigation
+
+Navigation is purely linear — the user scrolls down through the stratified layout. There are no tabs, no separate pages, and no hyperlinks between sections. This single-page structure (Bach et al., 2022) was a deliberate choice: the project charta scoped the dashboard to a single Streamlit page, and splitting across tabs would break the visible workflow from Browser to Analyzer.
+
+Within the Conflict Analyzer, the selectbox for Conflict ID acts as an in-page navigation control that reconfigures all downstream content — a form of in-page drilldown without page transitions.
+
+### Responsive Design
+
+The dashboard is explicitly desktop-optimised (`layout="wide"` in `st.set_page_config`). No responsive adaptation for mobile viewports was implemented, consistent with the charta constraint that screen real estate for exploratory dashboards requires desktop space.
 
 ## Interaction Design
-If the visualization product includes interactive elements, document them here:
 
-* **Interaction techniques**: Selection, filtering, zooming, panning, brushing, details-on-demand, drill-down, etc.
-* **Input modalities**: Mouse, touch, keyboard shortcuts, search fields, etc.
-* **State management**: How does the system respond to user interactions? What state transitions occur?
-* **Feedback and transitions**: How are changes communicated to the user – animations, highlighting, progressive disclosure?
+### Parameterization and Filtering (Conflict Browser)
 
-For each interaction, describe which user task (from the user analysis in the Project Charta) it supports and how it contributes to the cognitive, communicative or experiential value of the product.
+Three multiselect widgets (State A, State B, Hostility) and a range slider (Year) filter the MID dataset in real time. All four filters are applied simultaneously, meaning the displayed table reflects the intersection of all active constraints. Default values (State A: USA, State B: CHN, Hostility: "Use of Force") ensure the first-run experience is immediately populated with a meaningful result rather than an empty table.
+
+**User task supported**: Both Sarah and Marco's first step is to search for a conflict by state pair. This directly serves Sarah's need to narrow to a specific dyad quickly and Marco's need to browse by country without knowing COW Conflict IDs in advance.
+
+### Drilldown (Conflict Analyzer)
+
+The `st.selectbox` for Conflict ID is the primary drilldown control. Selecting an ID triggers a cascade of reactive updates across all Conflict Analyzer charts. This is the interaction that moves the user from the overview (Browser table) to details on demand (Analyzer charts), implementing Shneiderman's classic mantra as described in the charta's visualization concept.
+
+**User task supported**: Sarah's steps 2–4 (select ID → read MILEX → read trade chart). Marco's steps 3–4 (confirm the right event → scan for trade anomalies).
+
+### Trade Section Parameterization
+
+Within the Conflict Analyzer's Trade subsection, a multiselect for countries and a number input for year allow users to expand or redirect the trade analysis. Changing the country selection updates both the trade flow line chart and the Sankey diagram. Changing the year updates the Sankey only (the line chart uses a ±5-year window anchored to the input year, so a year change shifts the window).
+
+**User task supported**: Marco's exploratory hypothesis-testing — e.g., checking whether trade between a third party and one of the belligerents changed during the conflict.
+
+### Tooltips and Hover Details
+
+All Plotly charts provide interactive hover tooltips. The choropleth displays the raw `Total_Conflicts` count on hover (the log-transformed value is hidden). The Sankey displays directional flow labels and values in millions USD on hover. This implements the **detail on demand** screenspace pattern (Bach et al., 2022) without consuming permanent screen real estate.
+
+### State Management
+
+Streamlit re-runs the full script on every widget interaction. The `@st.cache_data` decorator on `get_conflicts_counts()` prevents re-aggregation of the global conflict count on each interaction; this function runs once at startup and is served from cache thereafter. All other data operations run on each interaction but are fast because the parquet files are pre-cleaned and in-memory.
 
 ## Visual Style and Aesthetics
-Document the overall visual design language:
 
-* **Typography**: Font families, sizes, hierarchy of text elements (titles, labels, annotations, body text).
-* **Colour palette**: Primary and secondary colours, background, accent colours. Provide colour codes (hex/RGB).
-* **Spacing and alignment**: Grid system, margins, padding, whitespace strategy.
-* **Branding**: Integration of organisational identity, logos, visual style guides, if applicable.
-* **Accessibility**: Considerations for colour-blindness, contrast ratios, screen reader compatibility, font legibility.
+### Typography
+
+Streamlit's default font stack (sans-serif) is used throughout. A global annotation font size of `vis_annot_size = 18` is set for all Plotly chart axes, tick labels, and legends. This is larger than Plotly's default (12px) and was chosen to ensure axis labels remain legible at the wide chart widths used in the desktop layout. Chart titles use Streamlit's markdown heading syntax (`####`) rendered above each chart container.
+
+### Colour Palette
+
+The dashboard uses a two-colour categorical scheme for per-country encoding:
+
+- **State A**: `#225ea8` (dark navy blue)
+- **State B**: `#7fcdbb` (medium teal)
+
+These colours are drawn from the `YlGnBu` ColorBrewer sequential palette — the same palette used for the global choropleth — creating visual coherence between the macro overview and the per-conflict detail. The two colours are perceptually distinct and maintain reasonable contrast for the most common form of colour-vision deficiency (deuteranopia), as neither relies on a red-green distinction.
+
+The choropleth uses the full `YlGnBu` sequential ramp for encoding conflict count. The conflict-period annotation uses red (`rgba(255,0,0,0.15)` for the filled region, solid red for the dashed line), which is semantically appropriate for marking a period of military conflict and is visually salient against the blue-teal chart series.
+
+The Sankey diagram uses `px.colors.qualitative.Set3` for node colours when more than two countries are selected, with consistent mirroring between origin and destination nodes.
+
+Non-involved countries in the conflict location map are rendered in `lightgray`, providing neutral figure-ground contrast that draws attention to the two highlighted states.
+
+All Plotly chart axis labels and tick fonts are explicitly set to black (`color="black"`) to override Plotly's default gray, which can become difficult to read against Streamlit's light background.
+
+### Spacing and Alignment
+
+Each major section is wrapped in `st.container(border=True)`, which provides a visible card boundary and consistent internal padding. Charts are rendered at explicit heights (750px for the global choropleth, 550px for the global time series, 400px for the conflict location map, 350px for activity and MILEX charts, 450px for the trade line chart, 600px for the Sankey). These heights are calibrated for the `layout="wide"` page mode on a typical 1920×1080 desktop display.
+
+### Accessibility
+
+The dashboard has known accessibility limitations:
+
+- The `YlGnBu` palette is reasonably safe for deuteranopia (red-green blindness) but has not been formally tested with a colour-blindness simulator for all chart types.
+- No ARIA labels or screen-reader annotations are provided beyond Streamlit's default widget accessibility.
+- The info-icon (`ℹ️`) tooltip for MILEX data availability relies on mouse hover and is not keyboard-accessible.
+
+These are documented as known limitations consistent with the project's desktop-expert-audience scope.
 
 ## Prototype Description
-Document the developed prototype(s):
 
-* **Prototype fidelity**: Low-fidelity (sketches, wireframes), medium-fidelity (static mockups), high-fidelity (interactive implementation)?
-* **Screenshots and/or link**: Include representative screenshots of the prototype. If the prototype is accessible online, provide the URL.
-* **Technology stack**: Tools, libraries and frameworks used for implementation (e.g. D3.js, Plotly, Tableau, Power BI, Streamlit, Observable, etc.).
-* **Code and version control**: Link to the code repository, branch or tag corresponding to the current prototype version.
+### Prototype Fidelity
+
+The delivered prototype is **high-fidelity**: a fully interactive, data-connected Streamlit application running against real COW and SIPRI parquet files. There are no wireframe or mockup intermediates; design iteration was conducted directly in code given the team's familiarity with Streamlit and Plotly.
+
+### Technology Stack
+
+- **Application framework**: Streamlit (Python), `st.set_page_config(layout="wide")`
+- **Data processing**: pandas, NumPy
+- **Interactive charts**: Plotly Express (`px.choropleth`, `px.line`, `px.bar`) and Plotly Graph Objects (`go.Figure`, `go.Sankey`)
+- **Data format**: Apache Parquet (pre-cleaned, loaded at startup via `pd.read_parquet`)
+- **Caching**: `@st.cache_data` for the global conflict aggregation function
+
+### Links
+
+The dashboard and full project documentation are published at: [https://podsv-fs26-ad24.github.io/ad24-6-fancyproject/](https://podsv-fs26-ad24.github.io/ad24-6-fancyproject/)
+
+### Code and Version Control
+
+Source code is maintained in the project repository. The main dashboard file is `Conflict_Overview.py`. Data cleaning pipelines and raw data are stored separately under `./data/`.
 
 ## Design Rationale and Iterations
-Document key design decisions, alternatives considered and the rationale for the chosen approach. This section ensures traceability and supports the evaluation phase.
 
-* **Design alternatives**: What alternative designs were considered? Sketches, mockups or descriptions of discarded approaches can be valuable for documentation.
-* **Design rationale**: Why was the chosen design preferred? Reference the project objectives, user needs (jobs, pains, gains) and the three value dimensions (cognitive, communicative, experiential).
-* **Iteration history**: If the design evolved through multiple iterations (e.g. based on informal feedback or internal reviews), briefly describe the key changes and their motivation.
+### Design Alternatives Considered
+
+**Network graph vs. bar chart for conflict context**: The charta proposed a relational network graph to show trading partners and conflict participants when a state is selected. During implementation, the dyadic structure of both the COW and alliance datasets made it straightforward to enumerate relationships as tabular data, but constructing a meaningful force-directed layout required solving country-code entity resolution across datasets and managing visual clutter for highly connected states (e.g., the US has alliances with dozens of partners). The grouped bar chart for conflict involvements in a ±5-year window was adopted instead: it answers the same contextual question ("how active were these states militarily around this conflict?") with a perceptually simpler encoding and no layout-instability risk.
+
+**Global time slider vs. local parameterization**: The charta proposed a global time slider that would update all charts simultaneously. Streamlit's reactive model makes a true global filter easy to implement, but a single year range would not serve the different time granularities needed across sections: the global choropleth is intentionally aggregated over all time; the Conflict Browser uses a year range for filtering; the Conflict Analyzer uses a conflict-derived ±5-year window. Forcing a global slider would either over-constrain the exploration or create confusing partial updates. Local parameterization was retained.
+
+**Alliance data as network vs. table**: COW alliance data is shown as a flat dataframe within each State A / State B card rather than as a visual network. Given the small number of relevant alliances per conflict (typically 2–10 rows), a table provides more direct legibility — exact partner names, alliance types, and date ranges — than a network with 5–10 nodes would.
+
+### Design Rationale
+
+The core design rationale follows the three value dimensions from the charta:
+
+**Cognitive and analytical value**: The stratified layout and drilldown from Browser → Analyzer directly implements the overview-zoom-filter-details workflow, matching the natural task sequence of both target user personas. The ±5-year window for MILEX and activity charts is a deliberate contextualisation choice: showing only the conflict year would prevent users from seeing the pre-conflict build-up and post-conflict resolution that are analytically significant for both policy briefings and investigative stories. The log-transform on the choropleth is necessary for cognitive accuracy: without it, the colour encoding would convey almost no information about countries below the top handful.
+
+**Communicative value**: The dashboard adopts what Bach et al. (2022) describe as a data collection (reader-driven) rather than a curated (author-driven) approach. No editorial annotations or pre-written narratives are included. The conflict-period shading is the only interpretive annotation layer, and it is factual (derived directly from the conflict's start and end year) rather than editorial. In-chart source attribution is currently absent, which is a documented limitation addressed in the evaluation report.
+
+**Experiential and aesthetic value**: The consistent two-colour scheme across all per-conflict charts (navy for State A, teal for State B) reduces the cognitive overhead of re-learning colour mappings as users scroll through the Conflict Analyzer. Streamlit's bordered containers provide clear visual grouping without requiring a custom CSS framework. The high chart heights (350–750px) ensure that time-series patterns are visible without needing to zoom — important for users like Sarah who will screenshot charts for briefing documents.
+
+### Iteration History
+
+The primary iteration occurred around the **Sankey diagram**: an initial implementation used a symmetric layout where the same country could appear as both origin and destination. This created confusing self-loops for bilateral trades between the same two countries. The final implementation duplicates country labels (origin-side and destination-side nodes are distinct) and clamps negative flow values to zero before rendering, resolving both issues.
+
+A secondary iteration addressed **chart font legibility**: the initial Plotly default font size (12px) was too small at the wide chart widths used in `layout="wide"` mode. Setting `vis_annot_size = 18` globally and applying it to all axis label and tick font specifications resolved this.
 
 ## Conclusions and Next Steps
-Summarise the key design decisions and their expected impact on the project objectives. Identify open questions, known limitations of the current prototype and topics to be addressed in the [Evaluation](evaluation.qmd) phase.
+
+The delivered prototype successfully implements the "overview first, zoom and filter, then details on demand" architecture specified in the charta. The stratified, grouped layout, consistent two-colour scheme, and reactive drilldown from Browser to Analyzer provide a coherent analytical workflow for both target user personas.
+
+The principal known limitation going into evaluation is the absence of in-chart data source attribution, which is important for the citable-output use case (Marco) and would be the first priority in a post-submission iteration. A secondary limitation is the missing-data ambiguity in the trade and MILEX charts: gaps in the time series are visually indistinguishable from zero values, which could lead users to draw incorrect conclusions about trade cessation during conflict periods.
+
+Both limitations, along with the absence of formal user testing, are documented in the [Evaluation Report](evaluation.qmd).
+
+## References
+
+Bach, B., Freeman, E., Abdul-Rahman, A., Turkay, C., Khan, S., Fan, Y., & Chen, M. (2022). Dashboard design patterns. *arXiv*. https://doi.org/10.48550/arXiv.2205.00757
