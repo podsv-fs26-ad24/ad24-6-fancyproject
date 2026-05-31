@@ -1,0 +1,116 @@
+---
+title: "Evaluation Report: Geopolitical Conflict & Trade Explorer"
+author: "DROP Inc"
+date: "2026-05-31"
+---
+
+# Evaluation Report
+
+This report documents the evaluation of the *Geopolitical Conflict & Trade Explorer* dashboard against the project objectives and success criteria defined in the [Project Charta](project_charta.qmd). The dashboard was implemented as a single-page Streamlit application providing interactive exploration of military conflict, trade flow, and military expenditure data drawn from the COW and SIPRI datasets.
+
+## Evaluation Setup
+
+### Evaluation Objectives
+
+The evaluation aimed to assess whether the delivered prototype fulfils the three core value dimensions defined in the project context:
+
+- **Cognitive and analytical value**: Can users effectively accomplish the intended analytical tasks — browsing conflicts by state pair, identifying spending and trade patterns around a conflict, and pivoting between conflict-centric and state-centric views?
+- **Communicative value**: Does the dashboard convey its findings to target audiences (policy analysts, researchers, and journalists) without requiring data engineering expertise?
+- **Experiential and aesthetic value**: Does the interface inspire trust, reward exploration, and meet the desktop-optimized usability standard defined in the Project Charta?
+
+These dimensions map directly onto the success criteria from the charta: replacing manual CSV cross-referencing, enabling intuitive hypothesis generation, and achieving high interaction depth (>10 filter or click interactions per session).
+
+### Evaluation Method
+
+Due to time and resource constraints inherent to an academic project context, **no formal user testing or standardised questionnaire-based evaluation** (e.g. SUS, NASA-TLX) was conducted. No participants from the target user segments were recruited, and no think-aloud sessions or task completion studies were run.
+
+The evaluation therefore relied exclusively on **heuristic evaluation** conducted by the development team. This involved structured expert review of the prototype against:
+
+- Munzner's nested model design guidelines (task and data abstraction, visual encoding, interaction design)
+- Nielsen's usability heuristics adapted to the dashboard context
+- The specific design implications derived from the user personas (Sarah Müller and Marco Ferretti) as documented in the Project Charta
+
+Each section of the dashboard — the summary metrics, the choropleth map, the Conflict Browser, the Conflict Analyzer, and the Trade section — was reviewed individually and as a linked whole.
+
+### Participants
+
+No external participants were involved in the evaluation. The heuristic review was conducted by the three-member development team (Patrik Pnishi, Aron Monn, Jan Müller) in their role as domain-informed evaluators.
+
+## Results
+
+### Cognitive and Analytical Value
+
+The dashboard delivers on its primary analytical promise: allowing users to move from a macro overview of global conflict involvement to a detailed per-conflict breakdown of military expenditure and bilateral trade in a single interface. The key features that support this are:
+
+- The **choropleth map** with log-scaled conflict counts provides an immediate global orientation. The choice of `log1p` transformation addresses the wide dynamic range of conflict counts between major powers and smaller states, though the mapping from log ticks to human-readable labels on the colorbar requires attention to follow.
+- The **Conflict Browser** with multiselect filters for State A, State B, hostility level, and year range allows rapid narrowing to a specific dyad. Default values (USA / CHN, "Use of Force") lower the barrier to the first meaningful interaction.
+- The **Conflict Analyzer** successfully implements the "details on demand" principle. The ±5-year activity bar chart and MILEX line chart with conflict-period shading (red band or dashed line) allow direct visual comparison of military posture before, during, and after a selected conflict. The trade section inherits the conflict context through pre-populated country and year defaults.
+- The **Sankey trade diagram** supports multilateral trade comparison for more than two countries, which goes beyond the core use case and adds exploratory depth for users like Marco Ferretti.
+
+The key limitation at this level is the **temporal mismatch** between datasets. SIPRI expenditure data is only available from 1988, while many COW conflicts predate this. The dashboard correctly signals this constraint via an inline info-icon, but users who select a pre-1988 conflict will see an empty MILEX chart without further guidance on what data is available.
+
+### Communicative Value
+
+The dashboard is designed as a neutral, data-forward tool. It avoids editorial framing, restricts text to chart titles, axis labels, and tooltips, and places source attribution and caveats behind info-icons — consistent with the visualization concept in the charta. This approach serves Sarah's need to produce defensible, source-backed outputs and Marco's need for citable evidence without interpretive overlay.
+
+The information density is high by design, and the layout is explicitly desktop-optimized. This is appropriate for the target audience but means the dashboard would not translate to a mobile context without significant rework. Within the desktop context, the use of bordered `st.container` blocks provides clear visual grouping that helps users parse the interface section by section.
+
+One communicative gap identified in the heuristic review is the absence of **explicit data source labels at the chart level**. The footer references the project documentation page, but a user who screenshots a trade or expenditure chart cannot tell from the image alone that the data comes from COW or SIPRI. This is a known gap relative to Marco's design implication in the charta.
+
+### Experiential and Aesthetic Value
+
+The interface adopts a functional, software-tool aesthetic consistent with Streamlit's default design language. The consistent use of `#225ea8` (navy) and `#7fcdbb` (teal) across all charts creates visual coherence. Font sizes are set globally (`vis_annot_size = 18`) to maintain readability at the chart level.
+
+The interaction model is reactive: filter changes update charts immediately, and the Conflict Analyzer automatically inherits context from the Browser. This reduces cognitive overhead for users moving through a workflow. The default filter values in the Conflict Browser (USA, CHN, "Use of Force") and in the Trade section (conflict countries, conflict start year) mean the first-run experience is immediately meaningful rather than empty.
+
+The main experiential limitation is the **absence of a loading indicator** for heavy computations (e.g. the Sankey diagram for large country selections). Users may experience latency without feedback that processing is underway.
+
+## Discussion
+
+### What Worked Well
+
+The dashboard successfully closes the core pain point identified in the user analysis: policy analysts and journalists no longer need to download, clean, and join three separate datasets to answer a single question. The linked-view architecture — where selecting a Conflict ID automatically populates the expenditure, activity, and trade charts — matches the natural workflow described for both Sarah and Marco.
+
+The decision to use `@st.cache_data` for the conflict count aggregation is architecturally sound and prevents redundant computation on filter interactions. The log-transform on the choropleth avoids the perceptual distortion that would otherwise result from the US and China dominating the color scale.
+
+The conflict-period shading logic (single-year dashed line vs. multi-year red band) is a small but consequential design detail that makes the charts read correctly for both brief incidents and extended wars.
+
+### Where the Design Fell Short
+
+The most significant gap is the **absence of user testing**. The heuristic evaluation reflects the team's own mental model of the interface, which is subject to familiarity bias. Without task-based testing with Sarah- or Marco-type users, it is not possible to confirm that the Conflict Browser's filter logic is discoverable, that the Conflict ID entry point in the Analyzer is intuitive, or that the MILEX availability warning is noticed before a user dismisses an empty chart as a bug.
+
+A secondary gap is the **lack of missing data signalling** in the trade charts. When trade data is absent for a country pair in a given year, the line chart simply shows no data point. This means users cannot distinguish between zero trade and missing records — a distinction the charta explicitly flagged as critical for Marco's use case.
+
+### Trade-offs Between Value Dimensions
+
+The dashboard prioritises analytical depth and data fidelity over accessibility for lower data-literacy users. This is the correct trade-off given the target audience (policy analysts and researchers with moderate to high data literacy), but it means the tool would require additional contextual guidance — embedded explanations, glossary tooltips, or onboarding text — before it could be extended to a broader public audience.
+
+### Limitations of the Evaluation
+
+The heuristic evaluation has three structural limitations. First, it was conducted by the same team that built the product, introducing confirmation bias. Second, without behavioural data (click paths, session lengths, drop-off points), the quantitative success criterion of >10 interactions per session cannot be assessed. Third, the evaluation was conducted on the prototype in a controlled local environment; performance characteristics under realistic network conditions and with full-size parquet files were not systematically tested.
+
+## Checkpoint Decision
+
+**Decision: Proceed to submission with documented limitations.**
+
+The prototype meets the core functional objectives defined in the charta: it delivers a linked, reactive dashboard that allows conflict-centric and state-centric exploration of COW and SIPRI data without requiring technical skills from the user. The identified gaps — missing data signalling in trade charts, absent in-chart source attribution, and no user validation — are documented and would constitute the primary backlog for a post-submission iteration.
+
+This decision was taken by the full project team (Patrik Pnishi, Aron Monn, Jan Müller) on 2026-05-31.
+
+A formal iteration cycle would require:
+
+- Recruitment of 3–5 participants from the target segments for task-based usability testing
+- Addition of explicit missing-data markers (e.g. dashed-line segments or gap annotations) to the trade and MILEX charts
+- In-chart data source labels (e.g. "Source: COW Bilateral Trade v4.0") attached to each plot
+- A loading spinner for computationally intensive views such as the Sankey diagram
+
+## Additional Requirements and Deployment Planning
+
+The dashboard is prepared for deployment as documented on the project website. The following requirements apply:
+
+- **Data refresh**: The COW and SIPRI parquet files are static snapshots. Any update to the underlying datasets requires re-running the data cleaning pipeline and replacing the parquet files in `./data/clean/`.
+- **Access control**: The dashboard is intended for public access. No authentication layer is required at this stage.
+- **Performance**: The `@st.cache_data` decorator on `get_conflicts_counts` should be extended to additional computationally heavy functions if session response times degrade under concurrent user load.
+- **Attribution**: The project documentation and data source references are accessible via the info-banner at the top of the dashboard. This link should remain stable through the submission and presentation period.
+
+Any presentation material prepared for the final exam presentation should be stored in the `docs` folder alongside this report.
