@@ -61,7 +61,7 @@ The interface adopts a functional, software-tool aesthetic consistent with Strea
 
 The interaction model is reactive: filter changes update charts immediately, and the Conflict Analyzer automatically inherits context from the Browser. This reduces cognitive overhead for users moving through a workflow. The default filter values in the Conflict Browser (USA, CHN, "Use of Force") and in the Trade section (conflict countries, conflict start year) mean the first-run experience is immediately meaningful rather than empty.
 
-The main experiential limitation is the **absence of a loading indicator** for heavy computations (e.g. the Sankey diagram for large country selections). Users may experience latency without feedback that processing is underway.
+The main experiential limitation is the **absence of a loading indicator** for heavy computations (e.g. the Sankey diagram for large country selections). Users may experience latency without feedback that processing is underway. However, during our own usage of the dashboard this was never the case.
 
 ## Discussion
 
@@ -69,9 +69,9 @@ The main experiential limitation is the **absence of a loading indicator** for h
 
 The dashboard successfully closes the core pain point identified in the user analysis: policy analysts and journalists no longer need to download, clean, and join three separate datasets to answer a single question. The linked-view architecture — where selecting a Conflict ID automatically populates the expenditure, activity, and trade charts — matches the natural workflow described for both Sarah and Marco.
 
-The decision to use `@st.cache_data` for the conflict count aggregation is architecturally sound and prevents redundant computation on filter interactions. The log-transform on the choropleth avoids the perceptual distortion that would otherwise result from the US and China dominating the color scale.
+The decision to use `@st.cache_data` for the conflict count aggregation is architecturally sound and prevents redundant computation on filter interactions. The log-transform on the choropleth avoids the perceptual distortion that would otherwise result from the US, Russia and China dominating the color scale.
 
-The conflict-period shading logic (single-year dashed line vs. multi-year red band) is a small but consequential design detail that makes the charts read correctly for both brief incidents and extended wars.
+The conflict-period shading logic (single-year dashed line vs. multi-year red band) is a small but consequential design detail that makes the charts read correctly for both brief incidents and extended Conflicts.
 
 ### Where the Design Fell Short
 

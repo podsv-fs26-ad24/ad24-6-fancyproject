@@ -710,14 +710,71 @@ with st.container(border=True):
                 annotation_position="top left",
                 annotation=dict(font_size=14, font_color="red")
             )
-        st.markdown(f"#### Trade Around Conflict {row["Conflict_ID"]}")
-        fig_line.add_annotation(
-            text="Source: Barbieri & Keshk (2016) – COW Trade v4.0 · <a href='https://correlatesofwar.org/data-sets/bilateral-trade/'>correlatesofwar.org</a>",
-            xref="paper", yref="paper", x=0, y=-0.12,
-            showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
-        )
+        st.markdown(f"#### Trade Around Conflict {row['Conflict_ID']}")
 
-        st.plotly_chart(fig_line, use_container_width=True)
+        if not trade_line.empty:
+            fig_line = go.Figure()
+
+            for _, pair_row in trade_line[["Statecode_A", "Statecode_B"]].drop_duplicates().iterrows():
+                state_a = pair_row["Statecode_A"]
+                state_b = pair_row["Statecode_B"]
+
+                pair_data = trade_line[
+                    (trade_line["Statecode_A"] == state_a) &
+                    (trade_line["Statecode_B"] == state_b)
+                ].sort_values("Year")
+
+                fig_line.add_trace(go.Scatter(
+                    x=pair_data["Year"], y=pair_data["Flow_1"],
+                    mode="lines+markers", name=f"{state_b} → {state_a}"
+                ))
+                fig_line.add_trace(go.Scatter(
+                    x=pair_data["Year"], y=pair_data["Flow_2"],
+                    mode="lines+markers", name=f"{state_a} → {state_b}"
+                ))
+
+            fig_line.update_layout(
+                height=450,
+                font=dict(size=vis_annot_size),
+                yaxis_title="Trade flow [Mio USD]",
+                legend_title="Trade Direction",
+                xaxis=dict(
+                    tickmode="linear", dtick=1,
+                    title_font=dict(color="black", size=vis_annot_size),
+                    tickfont=dict(color="black", size=vis_annot_size)
+                ),
+                yaxis=dict(
+                    title_font=dict(color="black", size=vis_annot_size),
+                    tickfont=dict(color="black", size=vis_annot_size)
+                ),
+                legend_font=dict(color="black", size=vis_annot_size),
+                legend_title_font=dict(color="black", size=vis_annot_size)
+            )
+
+            if row["Start_Year"] == row["End_Year"]:
+                fig_line.add_vline(
+                    x=row["Start_Year"], line_color="red", line_width=2, line_dash="dash",
+                    annotation_text="Conflict", annotation_position="top",
+                    annotation=dict(font_size=14, font_color="red")
+                )
+            else:
+                fig_line.add_vrect(
+                    x0=row["Start_Year"], x1=row["End_Year"],
+                    fillcolor="red", opacity=0.15, layer="below", line_width=0,
+                    annotation_text="Conflict Period", annotation_position="top left",
+                    annotation=dict(font_size=14, font_color="red")
+                )
+
+            fig_line.add_annotation(
+                text="Source: Barbieri & Keshk (2016) – COW Trade v4.0 · <a href='https://correlatesofwar.org/data-sets/bilateral-trade/'>correlatesofwar.org</a>",
+                xref="paper", yref="paper", x=0, y=-0.12,
+                showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+            )
+
+            st.plotly_chart(fig_line, use_container_width=True)
+
+        else:
+            st.info("No trade data available for these countries in this period.")
 
 
         # --- Multilateral Trade Sankey Diagram ---
