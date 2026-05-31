@@ -175,7 +175,7 @@ with st.container(border=True):
     fig.add_annotation(
         text="Source: Palmer et al. (2015) – COW MID4 · <a href='https://correlatesofwar.org/data-sets/mids/'>correlatesofwar.org</a>",
         xref="paper", yref="paper", x=0, y=-0.05,
-        showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+        showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -515,7 +515,7 @@ with st.container(border=True):
         fig_activity.add_annotation(
             text="Source: Palmer et al. (2015) – COW MID4 · <a href='https://correlatesofwar.org/data-sets/mids/'>correlatesofwar.org</a>",
             xref="paper", yref="paper", x=0, y=-0.18,
-            showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+            showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
         )
 
         st.plotly_chart(fig_activity, use_container_width=True)
@@ -598,7 +598,7 @@ with st.container(border=True):
             fig_milex.add_annotation(
                 text="Source: SIPRI Military Expenditure Database · <a href='https://doi.org/10.55163/CQGC9685'>doi.org/10.55163/CQGC9685</a>",
                 xref="paper", yref="paper", x=0, y=-0.18,
-                showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+                showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
             )
             st.plotly_chart(fig_milex, use_container_width=True)
 
@@ -768,7 +768,7 @@ with st.container(border=True):
             fig_line.add_annotation(
                 text="Source: Barbieri & Keshk (2016) – COW Trade v4.0 · <a href='https://correlatesofwar.org/data-sets/bilateral-trade/'>correlatesofwar.org</a>",
                 xref="paper", yref="paper", x=0, y=-0.12,
-                showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+                showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
             )
 
             st.plotly_chart(fig_line, use_container_width=True)
@@ -859,7 +859,7 @@ with st.container(border=True):
                 fig.add_annotation(
                     text="Source: Barbieri & Keshk (2016) – COW Trade v4.0 · <a href='https://correlatesofwar.org/data-sets/bilateral-trade/'>correlatesofwar.org</a>",
                     xref="paper", yref="paper", x=0, y=-0.05,
-                    showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+                    showarrow=False, font=dict(size=vis_annot_size, color="gray"), align="left", xanchor="left"
                 )
                 st.markdown(f"#### Multilateral Trade Network ({selected_year})")
                 st.plotly_chart(fig, use_container_width=True, theme=None)
