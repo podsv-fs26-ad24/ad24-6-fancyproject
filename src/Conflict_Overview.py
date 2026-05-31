@@ -172,6 +172,11 @@ with st.container(border=True):
         margin={"r":0,"t":0,"l":0,"b":0},
         height=750
     )
+    fig.add_annotation(
+        text="Source: Palmer et al. (2015) – COW MID4 · <a href='https://correlatesofwar.org/data-sets/mids/'>correlatesofwar.org</a>",
+        xref="paper", yref="paper", x=0, y=-0.05,
+        showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+    )
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -200,6 +205,11 @@ with st.container(border=True):
         ),
         legend_font=dict(color="black"),        
         legend_title_font=dict(color="black")
+    )
+    fig_glob_conflicts.add_annotation(
+        text="Source: Palmer et al. (2015) – COW MID4 · <a href='https://correlatesofwar.org/data-sets/mids/'>correlatesofwar.org</a>",
+        xref="paper", yref="paper", x=0, y=-0.12,
+        showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
     )
 
     st.plotly_chart(fig_glob_conflicts, use_container_width=True)
@@ -302,6 +312,7 @@ with st.container(border=True):
                     Ranges from zero to 100. Source Maoz (1982: 217-225)"""
                 )
             })
+    st.caption("Source: Palmer et al. (2015) – COW MID4 · https://correlatesofwar.org/data-sets/mids/")
 
 
 # =============================================================================
@@ -501,6 +512,11 @@ with st.container(border=True):
             legend_font=dict(color="black", size=vis_annot_size),        
             legend_title_font=dict(color="black", size=vis_annot_size)
         )
+        fig_activity.add_annotation(
+            text="Source: Palmer et al. (2015) – COW MID4 · <a href='https://correlatesofwar.org/data-sets/mids/'>correlatesofwar.org</a>",
+            xref="paper", yref="paper", x=0, y=-0.18,
+            showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+        )
 
         st.plotly_chart(fig_activity, use_container_width=True)
     
@@ -579,6 +595,11 @@ with st.container(border=True):
                 legend_title_font=dict(color="black")
             )
 
+            fig_milex.add_annotation(
+                text="Source: SIPRI Military Expenditure Database · <a href='https://doi.org/10.55163/CQGC9685'>doi.org/10.55163/CQGC9685</a>",
+                xref="paper", yref="paper", x=0, y=-0.18,
+                showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+            )
             st.plotly_chart(fig_milex, use_container_width=True)
 
 
@@ -690,6 +711,12 @@ with st.container(border=True):
                 annotation=dict(font_size=14, font_color="red")
             )
         st.markdown(f"#### Trade Around Conflict {row["Conflict_ID"]}")
+        fig_line.add_annotation(
+            text="Source: Barbieri & Keshk (2016) – COW Trade v4.0 · <a href='https://correlatesofwar.org/data-sets/bilateral-trade/'>correlatesofwar.org</a>",
+            xref="paper", yref="paper", x=0, y=-0.12,
+            showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
+        )
+
         st.plotly_chart(fig_line, use_container_width=True)
 
 
@@ -771,6 +798,11 @@ with st.container(border=True):
                 fig.update_layout(
                     font_size=vis_annot_size,
                     height=600 
+                )
+                fig.add_annotation(
+                    text="Source: Barbieri & Keshk (2016) – COW Trade v4.0 · <a href='https://correlatesofwar.org/data-sets/bilateral-trade/'>correlatesofwar.org</a>",
+                    xref="paper", yref="paper", x=0, y=-0.05,
+                    showarrow=False, font=dict(size=11, color="gray"), align="left", xanchor="left"
                 )
                 st.markdown(f"#### Multilateral Trade Network ({selected_year})")
                 st.plotly_chart(fig, use_container_width=True, theme=None)

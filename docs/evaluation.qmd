@@ -55,8 +55,6 @@ The dashboard is designed as a neutral, data-forward tool. It avoids editorial f
 
 The information density is high by design, and the layout is explicitly desktop-optimized. This is appropriate for the target audience but means the dashboard would not translate to a mobile context without significant rework. Within the desktop context, the use of bordered `st.container` blocks provides clear visual grouping that helps users parse the interface section by section.
 
-One communicative gap identified in the heuristic review is the absence of **explicit data source labels at the chart level**. The footer references the project documentation page, but a user who screenshots a trade or expenditure chart cannot tell from the image alone that the data comes from COW or SIPRI. This is a known gap relative to Marco's design implication in the charta.
-
 ### Experiential and Aesthetic Value
 
 The interface adopts a functional, software-tool aesthetic consistent with Streamlit's default design language. The consistent use of `#225ea8` (navy) and `#7fcdbb` (teal) across all charts creates visual coherence. Font sizes are set globally (`vis_annot_size = 18`) to maintain readability at the chart level.
